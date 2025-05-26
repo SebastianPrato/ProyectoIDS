@@ -1,48 +1,79 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 
-app:Flask = Flask(__name__)
+app = Flask(__name__)
+app.secret_key = 'cualquier_clave_para_flash'  # agrego el flash para cualquier mensaje para procesar "POSTs"
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     return render_template('home.html')
 
 
-@app.route('/productos')
+
+@app.route('/productos', methods=['GET'])
 def productos():
     return render_template('productos.html')
 
-@app.route('/productos/<int:producto_id>')
+@app.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
-    # Aquí podrías obtener los detalles del producto de una base de datos
     return render_template('producto_detalle.html', producto_id=producto_id)
 
-@app.route('/carrito')
-def carrito():  
-    # Aquí podrías obtener los productos del carrito de una base de datos o sesión
+
+
+
+@app.route('/carrito', methods=['GET'])
+def carrito():
     return render_template('carrito.html')
 
-@app.route('/contacto')
+
+
+@app.route('/contacto', methods=['GET', 'POST'])
 def contacto():
-    return render_template('contacto.html')
+    if request.method == 'POST':
+        # ponemos un formulario de contacto aca?
+        flash('Mensaje enviado, ¡gracias!')
+        return redirect(url_for('contacto'))
+    return render_template('contact.html')
+
+
+
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
+    if request.method == 'POST':
+        # aca agarramos el form['nombre'], form['mail'], etc
+        flash('Registro recibido, revisa tu email.')
+        return redirect(url_for('home'))
     return render_template('registro.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        # comparamos las credenciales con la API /api/login si quieren
+        flash('Login exitoso.')
+        return redirect(url_for('home'))
     return render_template('login.html')
 
-@app.route('/productos/categorias')
+
+
+
+@app.route('/productos/categorias', methods=['GET'])
 def categorias():
     return render_template('categorias.html')
 
-@app.route('/productos/categorias/<categoria>')
+@app.route('/productos/categorias/<categoria>', methods=['GET'])
 def categoria_detalle(categoria):
-    # Aquí podrías obtener los productos de la categoría de una base de datos
     return render_template('categoria_detalle.html', categoria=categoria)
 
-@app.route('/about_us')
+
+
+@app.route('/about_us', methods=['GET'])
 def about_us():
     return render_template('about_us.html')
+
+
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
+
+
 
