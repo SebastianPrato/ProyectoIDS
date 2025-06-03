@@ -46,6 +46,9 @@ def contacto():
     return render_template('contact.html')
 
 
+@app.route('/carrito/checkout')
+def checkout():
+    return render_template('checkout.html')
 
 
 @app.route('/registro', methods=['GET', 'POST'])
