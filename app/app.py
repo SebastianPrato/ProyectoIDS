@@ -3,11 +3,23 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 app = Flask(__name__)
 app.secret_key = 'cualquier_clave_para_flash'  # agrego el flash para cualquier mensaje para procesar "POSTs"
 
+API_BASE = "http://localhost:5000"
+
+def obtener_productos():
+    response = request.get(f"{API_BASE}/api/productos")
+    if response.status_code == 200:
+        return response.json()
+    return {}
+
+def obtener_categoria(categoria):
+    response=request.get(f"{API_BASE}/api/productos/categorrias/{categoria}")
+    if response.status_code==200:
+        return response.json()
+    return {}
+
 @app.route('/', methods=['GET'])
 def home():
     return render_template('home.html')
-
-
 
 @app.route('/productos', methods=['GET'])
 def productos():
@@ -15,7 +27,7 @@ def productos():
 
 @app.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
-    return render_template('producto_detalle.html', producto_id=producto_id)
+    return render_template('detalle.html')
 
 
 
@@ -23,7 +35,6 @@ def producto_detalle(producto_id):
 @app.route('/carrito', methods=['GET'])
 def carrito():
     return render_template('carrito.html')
-
 
 
 @app.route('/contacto', methods=['GET', 'POST'])
@@ -62,14 +73,13 @@ def categorias():
 
 @app.route('/productos/categorias/<categoria>', methods=['GET'])
 def categoria_detalle(categoria):
-    return render_template('categoria_detalle.html', categoria=categoria)
+    return render_template('categoria_detalle.html', categoria=obtener_categoria(categoria))
 
 
 
 @app.route('/about_us', methods=['GET'])
 def about_us():
     return render_template('about_us.html')
-
 
 
 if __name__ == '__main__':
