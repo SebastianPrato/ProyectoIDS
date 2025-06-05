@@ -24,12 +24,11 @@ def home():
 
 @app.route('/productos', methods=['GET'])
 def productos():
-    return render_template('productos.html', productos=[ {"nombre": "potaxio", "precio": 12, "foto":"img/product-1.jpg", "id": 1}, 
-                                                        {"nombre": "potaxie", "precio": 23, "foto":"img/product-1.jpg", "id":2} ])
+    return render_template('productos.html', juegos=juegos)
 
 @app.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
-    return render_template('detalle.html')
+   return render_template('detalle.html')
 
 
 
@@ -85,6 +84,13 @@ def categoria_detalle(categoria):
 def about_us():
     return render_template('about_us.html')
 
+#@app.route('/productos/<int:producto_id>', methods=['GET'])
+#def producto_detalle(producto_id):
+#    producto = next((j for j in juegos if j["id"] == producto_id), None)
+#    if producto:
+#        return render_template('producto_detalle.html', producto=producto)
+#    else:
+#        return "Producto no encontrado", 404
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

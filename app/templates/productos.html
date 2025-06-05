@@ -44,7 +44,7 @@
             <!-- Price End -->
             
             <!-- Color Start -->
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filtrar por categoría</span></h5>
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filtrar por categorÃ­a</span></h5>
             <div class="bg-light p-4 mb-30">
                 <form>
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -123,27 +123,35 @@
                         </div>
                     </div>
                 </div>
-                {% for producto in productos %}
-                <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                    <div class="product-item bg-light mb-4">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{{ producto['imagen'] }}" alt="">
-                            <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                <div class="row">
+                    {% for juego in juegos %}
+                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                        <div class="product-item bg-light mb-4">
+                            <div class="product-img position-relative overflow-hidden">
+                                <img class="img-fluid w-100" src="{{ juego.imagen }}" alt="">
                             </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="{{ url_for('producto_detalle', producto_id= producto ['id'] ) }}">{{ producto['nombre'] }}</a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>{{ producto['precio'] }}</h5>
+                            <div class="text-center py-4">
+                                <a class="h6 text-decoration-none text-truncate" href="#">{{ juego.nombre }}</a>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <h5>${{ juego.precio }}</h5><h6 class="text-muted ml-2">{{ juego.categoria }}</h6>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mb-1">
+                                    {% for i in range(1, 6) %}
+                                        {% if i <= juego.rating %}
+                                            <small class="fa fa-star text-primary mr-1"></small>
+                                        {% elif i - 0.5 == juego.rating %}
+                                            <small class="fa fa-star-half-alt text-primary mr-1"></small>
+                                        {% else %}
+                                            <small class="far fa-star text-primary mr-1"></small>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <small>({{ juego.rating }})</small>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-        </div>
         <!-- Shop Product End -->
     </div>
 </div>
