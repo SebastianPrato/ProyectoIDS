@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
+from productos_data import juegos #diccionario de ejemplo, luego cambiar por extraccion de la base datos
 
 app = Flask(__name__)
 app.secret_key = 'cualquier_clave_para_flash'  # agrego el flash para cualquier mensaje para procesar "POSTs"

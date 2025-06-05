@@ -1,0 +1,22 @@
+juegos = [
+    {"id": 1, "nombre": "Laptop Lenovo Ideapad", "imagen": "/static/img/laptop1.jpg", "precio": 850000, "categoria": "Electrónica", "rating": 4},
+    {"id": 2, "nombre": "Smartphone Samsung A54", "imagen": "/static/img/phone1.jpg", "precio": 420000, "categoria": "Electrónica", "rating": 5},
+    {"id": 3, "nombre": "Auriculares JBL", "imagen": "/static/img/auriculares.jpg", "precio": 35000, "categoria": "Accesorios", "rating": 4},
+    {"id": 4, "nombre": "Cámara Canon EOS 2000D", "imagen": "/static/img/camara.jpg", "precio": 600000, "categoria": "Fotografía", "rating": 5},
+    {"id": 5, "nombre": "Tablet Xiaomi Pad 5", "imagen": "/static/img/tablet.jpg", "precio": 310000, "categoria": "Electrónica", "rating": 4},
+    {"id": 6, "nombre": "Monitor LG 24\"", "imagen": "/static/img/monitor.jpg", "precio": 180000, "categoria": "Electrónica", "rating": 3},
+    {"id": 7, "nombre": "Teclado mecánico Redragon", "imagen": "/static/img/teclado.jpg", "precio": 40000, "categoria": "Accesorios", "rating": 5},
+    {"id": 8, "nombre": "Mouse Logitech M185", "imagen": "/static/img/mouse.jpg", "precio": 12000, "categoria": "Accesorios", "rating": 4},
+    {"id": 9, "nombre": "Impresora HP Deskjet", "imagen": "/static/img/impresora.jpg", "precio": 55000, "categoria": "Oficina", "rating": 3},
+    {"id": 10, "nombre": "Smartwatch Amazfit Bip", "imagen": "/static/img/smartwatch.jpg", "precio": 50000, "categoria": "Wearables", "rating": 4},
+    {"id": 11, "nombre": "Zapatillas Nike Air Max", "imagen": "/static/img/nike.jpg", "precio": 75000, "categoria": "Ropa", "rating": 5},
+    {"id": 12, "nombre": "Campera Adidas", "imagen": "/static/img/adidas.jpg", "precio": 85000, "categoria": "Ropa", "rating": 4},
+    {"id": 13, "nombre": "Silla ergonómica", "imagen": "/static/img/silla.jpg", "precio": 130000, "categoria": "Oficina", "rating": 4},
+    {"id": 14, "nombre": "Cafetera Oster", "imagen": "/static/img/cafetera.jpg", "precio": 45000, "categoria": "Electrodomésticos", "rating": 3},
+    {"id": 15, "nombre": "Heladera Samsung No Frost", "imagen": "/static/img/heladera.jpg", "precio": 900000, "categoria": "Electrodomésticos", "rating": 5},
+    {"id": 16, "nombre": "Microondas BGH", "imagen": "/static/img/microondas.jpg", "precio": 65000, "categoria": "Electrodomésticos", "rating": 4},
+    {"id": 17, "nombre": "Notebook HP 15\"", "imagen": "/static/img/notebook.jpg", "precio": 780000, "categoria": "Electrónica", "rating": 4},
+    {"id": 18, "nombre": "Disco Externo 1TB", "imagen": "/static/img/disco.jpg", "precio": 70000, "categoria": "Accesorios", "rating": 5},
+    {"id": 19, "nombre": "Parlante Bluetooth Sony", "imagen": "/static/img/parlante.jpg", "precio": 39000, "categoria": "Accesorios", "rating": 4},
+    {"id": 20, "nombre": "Smart TV 50\" LG", "imagen": "/static/img/tv.jpg", "precio": 620000, "categoria": "Electrónica", "rating": 5}
+]
