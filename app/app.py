@@ -19,11 +19,12 @@ def obtener_categoria(categoria):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home.html')
+    return render_template('home.html', categorias=[], productos=[], ingresos=[])
 
 @app.route('/productos', methods=['GET'])
 def productos():
-    return render_template('productos.html')
+    return render_template('productos.html', productos=[ {"nombre": "potaxio", "precio": 12, "foto":"img/product-1.jpg", "id": 1}, 
+                                                        {"nombre": "potaxie", "precio": 23, "foto":"img/product-1.jpg", "id":2} ])
 
 @app.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
@@ -69,15 +70,14 @@ def login():
 
 
 
-
+"""
 @app.route('/productos/categorias', methods=['GET'])
 def categorias():
     return render_template('categorias.html')
-
+"""    
 @app.route('/productos/categorias/<categoria>', methods=['GET'])
 def categoria_detalle(categoria):
     return render_template('categoria_detalle.html', categoria=obtener_categoria(categoria))
-
 
 
 @app.route('/about_us', methods=['GET'])
