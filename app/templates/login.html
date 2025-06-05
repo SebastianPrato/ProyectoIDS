@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>LUDOTECA</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="{{  url_for('static', filename= 'lib/animate/animate.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'lib/owlcarousel/assets/owl.carousel.min.css')}}">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css')}}">
+</head>
+
+<body class="vh-100">
+    <div class="bg-primary vh-100 d-flex align-items-center">
+        <div class="border rounded-4 d-flex flex-column align-items-center m-auto w-25 bg-light py-5">
+            <h1 class="w-100 text-center" >Ingresar</h1>
+            <div class="w-100 text-center px-3">
+                <form class="d-flex flex-column align-items-center w-100" action="">
+                    <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
+                        <label class="w-100" for="email">Ingrese su mail</label>
+                        <input class="w-100" type="text" name="email">
+                    </div>
+                    <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
+                        <label class="w-100" for="password">Ingrese su contrasena</label>
+                        <input class="w-100" type="password" name="password">
+                    </div>
+                    <div class="pt-2">
+                        <button class="btn btn-primary" type="submit">Confirmar</button>  
+                    </div>
+                </form>
+            </div>
+            <div class="pt-2">
+                <span>
+                    No tenes cuenta? <a href="{{ url_for('registro') }}">registrate</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
