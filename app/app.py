@@ -22,6 +22,10 @@ def obtener_categoria(categoria):
 def home():
     return render_template('home.html', categorias=[], productos=[], ingresos=[])
 
+@app.route('/miscompras')
+def miscompras():
+    return render_template('miscompras.html')
+
 @app.route('/productos', methods=['GET'])
 def productos():
     return render_template('productos.html', juegos=juegos)
