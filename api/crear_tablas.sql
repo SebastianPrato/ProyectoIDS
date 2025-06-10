@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS productos (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  categoria INT NOT NULL,
   nombre VARCHAR(100) NOT NULL,
-  stock INT NOT NULL
-  descripcion VARCHAR(255) NOT NULL,
-  precio DECIMAL(10, 2) NOT NULL,
+  descripcion VARCHAR(250) NOT NULL,
+  precio INT NOT NULL,
+  imagen VARCHAR(250) NOT NULL,
+  stock INT NOT NULL,
   image_url VARCHAR(255) NOT NULL,
 );
 
@@ -12,7 +14,7 @@ CREATE TABLE IF NOT EXISTS clientes (
   nombre VARCHAR(50) NOT NULL,
   apellido VARCHAR(50) NOT NULL,
   mail VARCHAR(100) UNIQUE NOT NULL,
-  contraseña VARCHAR(255) NOT NULL
+  contrasenia VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS administradores (
@@ -20,7 +22,7 @@ CREATE TABLE IF NOT EXISTS administradores (
   nombre VARCHAR(50) NOT NULL,
   apellido VARCHAR(50) NOT NULL,
   mail VARCHAR(100) UNIQUE NOT NULL,
-  contraseña VARCHAR(255) NOT NULL
+  contrasenia VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS compras (
@@ -40,7 +42,12 @@ CREATE TABLE IF NOT EXISTS detalle_compras (
   FOREIGN KEY(producto_id) REFERENCES productos(id)
 );
 
-/* 
-si decidimos usar categorias, ponemos:
-ALTER TABLE productos ADD COLUMN categoria VARCHAR(50) NOT NULL DEFAULT 'General';
-*/
+CREATE TABLE IF NOT EXISTS carrito (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT NOT NULL,
+  producto_id INT NOT NULL,
+  cantidad INT NOT NULL,
+  fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(cliente_id) REFERENCES clientes(id),
+  FOREIGN KEY(producto_id) REFERENCES productos(id)
+);
