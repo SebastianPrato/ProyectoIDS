@@ -14,14 +14,14 @@ def get_db():
 @app.route('/api/productos', methods=['GET'])
 def api_productos():
     db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id, nombre, stock FROM productos")
+    cur.execute("SELECT id, nombre, stock,image_url FROM productos")
     return jsonify(cur.fetchall()), 200
 
 
 @app.route('/api/productos/<int:producto_id>', methods=['GET'])
 def api_producto_detalle(producto_id):
     db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id, nombre, stock FROM productos WHERE id=%s", (producto_id,))
+    cur.execute("SELECT id, nombre, stock,descripcion,image_url FROM productos WHERE id=%s", (producto_id,))
 
     prod = cur.fetchone()
     if not prod: abort(404, 'Producto no encontrado')
