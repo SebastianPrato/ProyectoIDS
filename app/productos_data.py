@@ -16,7 +16,7 @@ juegos = [
     
     {"id": 3,
      "nombre": "Uno",
-     "imagen": "/static/img/uno.jpg",}
+     "imagen": "/static/img/uno.jpg",
     "precio": 8000,
     "categoria": "Cartas",
     "rating": 4,
