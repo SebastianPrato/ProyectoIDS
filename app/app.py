@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from productos_data import juegos #diccionario de ejemplo, luego cambiar por extraccion de la base datos
+from utils.forms import LoginForm
 
 app = Flask(__name__)
 app.secret_key = 'cualquier_clave_para_flash'  # agrego el flash para cualquier mensaje para procesar "POSTs"
@@ -62,11 +63,16 @@ def registro():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        # comparamos las credenciales con la API /api/login si quieren
+    form = LoginForm()
+
+    if form.validate_on_submit(): 
+        email = form.email.data
+        password = form.password.data
+        #Logica del login
         flash('Login exitoso.')
         return redirect(url_for('home'))
-    return render_template('login.html')
+
+    return render_template('login.html', form=form)
 
 
 
