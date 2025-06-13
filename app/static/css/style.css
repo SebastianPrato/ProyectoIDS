@@ -9713,24 +9713,3 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
-
-#encabezado-about-us {
-  background-color: #FFD333;
-  height: 10vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-.parrafo-about-us {
-  display: flex;
-  text-align: center;
-  height: 4vh;
-}
-
-#nombregrupal{
-  color: #FFD333;
-}
-#aboutus{
-  text-align: center;
-}

@@ -3,11 +3,10 @@ CREATE TABLE IF NOT EXISTS productos (
   categoria INT NOT NULL,
   nombre VARCHAR(100) NOT NULL,
   descripcion VARCHAR(250) NOT NULL,
-  precio INT NOT NULL,
   imagen VARCHAR(250) NOT NULL,
-  stock INT NOT NULL
+  stock INT NOT NULL,
   precio DECIMAL(10, 2) NOT NULL,
-  image_url VARCHAR(255) NOT NULL,
+  rating DECIMAL(10,1) NOT NULL DEFAULT 0.0
 );
 
 CREATE TABLE IF NOT EXISTS clientes (

@@ -14,7 +14,7 @@ def get_db():
 @app.route('/api/productos', methods=['GET'])
 def api_productos():
     db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id, nombre, stock,image_url FROM productos")
+    cur.execute("SELECT id, nombre, stock, image_url, rating FROM productos")
     return jsonify(cur.fetchall()), 200
 
 
