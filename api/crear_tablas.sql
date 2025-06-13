@@ -41,3 +41,13 @@ CREATE TABLE IF NOT EXISTS detalle_compras (
   FOREIGN KEY(compra_id) REFERENCES compras(id),
   FOREIGN KEY(producto_id) REFERENCES productos(id)
 );
+
+CREATE TABLE IF NOT EXISTS carrito (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT NOT NULL,
+  producto_id INT NOT NULL,
+  cantidad INT NOT NULL,
+  fecha_agregado DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(cliente_id) REFERENCES clientes(id),
+  FOREIGN KEY(producto_id) REFERENCES productos(id)
+);
