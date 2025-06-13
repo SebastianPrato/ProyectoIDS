@@ -31,29 +31,38 @@
         <div class="border rounded-4 d-flex flex-column align-items-center m-auto w-25 bg-light py-5">
             <h1 class="w-100 text-center" >Registrate</h1>
             <div class="w-100 text-center px-3">
-                <form class="d-flex flex-column align-items-center w-100" action="">
+                <form class="d-flex flex-column align-items-center w-100" method="POST" action="" novalidate>
+                    {{ form.hidden_tag() }}
                     <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        <label class="w-100" for="nombre">Ingrese su nombre</label>
-                        <input class="w-100" type="text" name="nombre">
+                        {{ form.name.label(class="w-100") }}
+                        {{ form.name(class="form-control w-100") }}   
                     </div>
                     <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        <label class="w-100" for="apellido">Ingrese su apellido</label>
-                        <input class="w-100" type="text" name="apellido">
+                        {{ form.surname.label(class="w-100") }}
+                        {{ form.surname(class="form-control w-100") }}
                     </div>
                     <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        <label class="w-100" for="email">Ingrese su mail</label>
-                        <input class="w-100" type="text" name="email">
+                        {{ form.email.label(class="w-100") }}
+                        {{ form.email(class="form-control w-100") }}
                     </div>
                     <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        <label class="w-100" for="password">Ingrese su contrasena</label>
-                        <input class="w-100" type="password" name="password">
+                        {{ form.password.label(class="w-100") }}
+                        {{ form.password(class="form-control w-100")}}
+                        <span>*Debe tener entre 6 y 12 caracteres*</span>
                     </div>
                     <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        <label class="w-100" for="password-confirm">Confirme su contrasena</label>
-                        <input class="w-100" type="password" name="password-confirm">
+                        {{ form.confirm.label(class="w-100") }}
+                        {{ form.confirm(class="form-control w-100") }}
                     </div>
                     <div class="pt-2">
-                        <button class="btn btn-primary" type="submit">Confirmar</button>  
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <div class="pt-2">
+                        {{ form.submit(class="btn btn-primary") }}
                     </div>
                 </form>
             </div>
