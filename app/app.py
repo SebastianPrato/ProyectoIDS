@@ -91,6 +91,10 @@ def categoria_detalle(categoria):
 def about_us():
     return render_template('about_us.html')
 
+@app.route('/faq', methods=['GET'])
+def faq():
+    return render_template('faq.html')
+
 #@app.route('/productos/<int:producto_id>', methods=['GET'])
 #def producto_detalle(producto_id):
 #    producto = next((j for j in juegos if j["id"] == producto_id), None)
