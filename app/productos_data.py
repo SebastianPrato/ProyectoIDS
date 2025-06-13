@@ -56,5 +56,4 @@ juegos = [
      "rating": 5,
      "descripcion":"Juego de fiesta para 4 o más jugadores. Establece contacto con tus agentes con nombre clave, pero no te equivoques que si eliges a un agente especial infiltrado pierdes!"
     },
- 
 ]
