@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from productos_data import juegos #diccionario de ejemplo, luego cambiar por extraccion de la base datos
+from utils.forms import LoginForm, RegisterForm
 
 import requests
 
@@ -61,19 +62,30 @@ def checkout():
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
-    if request.method == 'POST':
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        nombre = form.name.data.strip()
+        apellido = form.surname.data.strip()
+        email = form.email.data
+        contrasenia = form.password.data.strip()
         # aca agarramos el form['nombre'], form['mail'], etc
         flash('Registro recibido, revisa tu email.')
         return redirect(url_for('home'))
-    return render_template('registro.html')
+    return render_template('registro.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        # comparamos las credenciales con la API /api/login si quieren
+    form = LoginForm()
+
+    if form.validate_on_submit(): 
+        email = form.email.data
+        password = form.password.data
+        #Logica del login
         flash('Login exitoso.')
         return redirect(url_for('home'))
-    return render_template('login.html')
+
+    return render_template('login.html', form=form)
 
 
 
