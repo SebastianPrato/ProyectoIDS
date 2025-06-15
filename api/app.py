@@ -1,71 +1,217 @@
 import mysql.connector
-from flask import Flask, request, jsonify, abort
-
+from flask import Flask, request, jsonify, abort, session, redirect
+from flask_login import LoginManager
+FRONT_BASE = "http://localhost:5001"
 app = Flask(__name__)
+app.secret_key = 'clave-super-secreta' 
+app.config['SESSION_COOKIE_DOMAIN'] = '127.0.0.1'  # Configura para localhost
+app.config['SESSION_COOKIE_SECURE'] = False        # Solo si no estás usando HTTPS
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="root", password="", database="flask_app",
+        host="localhost", user="admin", password="password", database="ludoteca",
         autocommit=False  # manejamos transacciones manualmente
     )
 
+@app.route('/', methods=['GET'])
+def inicio():
+    coneccion=get_db()
+    cursor= coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM productos ORDER BY  id DESC LIMIT 8")
+    recientes=cursor.fetchall()
+    cursor.execute("SELECT * FROM productos LIMIT 8")
+    destacados=cursor.fetchall()
+    cursor.close()
+    coneccion.close()
+    return jsonify({'recientes':recientes, 'destacados':destacados}), 200
 
 
-@app.route('/api/productos', methods=['GET'])
-def api_productos():
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id, nombre, stock,image_url FROM productos")
-    return jsonify(cur.fetchall()), 200
+@app.route('/productos', methods=['GET'])
+def productos():
+    coneccion = get_db(); cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM productos")
+    productos= cursor.fetchall()
+    cursor.close()
+    coneccion.close()
+    return jsonify(productos), 200
 
 
-@app.route('/api/productos/<int:producto_id>', methods=['GET'])
-def api_producto_detalle(producto_id):
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id, nombre, stock,descripcion,image_url FROM productos WHERE id=%s", (producto_id,))
-
-    prod = cur.fetchone()
-    if not prod: abort(404, 'Producto no encontrado')
+@app.route('/productos/<int:producto_id>', methods=['GET'])
+def producto_detalle(producto_id):
+    coneccion = get_db(); cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM productos WHERE id=%s", (producto_id,))
+    prod = cursor.fetchone()
+    cursor.close()
+    coneccion.close()
+    if not prod: 
+        abort(404, 'Producto no encontrado')
     return jsonify(prod), 200
 
-@app.route('/api/registro', methods=['POST'])
-def api_registro():
+@app.route('/registro', methods=['POST'])
+def registro():
+    data = request.form.to_dict()  # Captura datos del formulario en formato diccionario
+    campos_requeridos = ['nombre', 'apellido', 'correo', 'contrasenia', 'recontrasenia']
+    if not all(campo in data for campo in campos_requeridos): #Verifica que estén los datos
+        return jsonify({"message": "Faltan datos obligatorios"}), 400
+    
+    if data['contrasenia'] != data['reconstrasenia']:
+        return jsonify({"message": "Las contraseñas no coinciden"}), 400
+    query_insert = """
+        INSERT INTO usuarios (nombre, apellido, correo, contrasni)
+        VALUES (%s, %s, %s)
+    """
+    query_check = "SELECT * FROM usuarios WHERE correo = %s"
 
-    data = request.get_json() or {}
-    for k in ('nombre','apellido','mail','contraseña'):
-        if not data.get(k):
-            abort(400, f'Falta {k}')
-    db = get_db(); cur =  db.cursor()
     try:
-        cur.execute(
-            "INSERT INTO clientes(nombre,apellido,mail,contraseña) VALUES(%s,%s,%s,%s)",
-            (data['nombre'],data['apellido'],data['mail'],data['contraseña'])
-        )
-        db.commit()
-        return jsonify({'cliente_id': cur.lastrowid}), 201
-    except mysql.connector.Error as e:
+        coneccion = get_db()
+        cursor = coneccion.cursor()
+        cursor.execute(query_check, (data['correo'],))
+        if cursor.fetchone(): #Verifica que el correo no esté registrado
+            return jsonify({"message": "El correo ya está registrado"}), 400
+        values = (data['nombre'], data['apellido'], data['correo'], False)
+        cursor.execute(query_insert, values)
+        coneccion.commit()
+        return redirect(f"{FRONT_BASE}/login")
+    except Exception as e:
+        return jsonify({'message': f'Error al registrar usuario: {str(e)}'}), 500
+    finally:
+        if cursor:
+            try:
+                cursor.close()
+            except Exception as e:
+                print(f"Error al cerrar el cursor: {e}")
+        if coneccion:
+            try:
+                coneccion.close()
+            except Exception as e:
+                print(f"Error al cerrar la conexión: {e}")
 
-        db.rollback()
-        abort(400, str(e))
+@app.route('/usuario/login', methods=['POST'])
+def login():
+    try:
+        correo = request.form['correo']
+        contrasenia = request.form['contrasenia']
+        query = "SELECT * FROM usuarios WHERE correo = %s"
+        connection = get_db()
+        with connection.cursor() as cursor:
+            cursor.execute(query, (correo,))
+            usuario = cursor.fetchone()
+            if usuario and usuario['contrasenia']==contrasenia: ## Verificar si el usuario existe y la contraseña es correcta
+                session['usuario'] = usuario['id']
+                session['nombre'] = usuario['nombre']
+                if usuario['administrador']:
+                    return redirect(f"{FRONT_BASE}/admin")  # Redirige a /admin
+                return redirect(f"{FRONT_BASE}/")  # Redirigir a /
+            else:
+                return jsonify({'auth': False, "message": "Credenciales incorrectas"}), 401
+    except Exception as e:
+        return jsonify({'auth': False, 'message': f'Error al iniciar sesión: {str(e)}'}), 500
+    finally:
+        connection.close()
 
-@app.route('/api/login', methods=['POST'])
-def api_login():
-    data = request.get_json() or {}
-    mail, pwd = data.get('mail'), data.get
-    ('contraseña')
-    if not mail or not pwd: abort(400, 'Mail y contraseña requeridos')
+@app.route('/usuarios/logout', methods=['POST'])
+def logout():
+    session.clear()  # Limpiar todas las variables de sesión
+    return redirect(f"{FRONT_BASE}/login")
+
+@app.route('/productos/categoria/<int:categoria_id>', methods=['GET'])
+def api_categoria(categoria_id):
     db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute(
-        "SELECT id, nombre FROM clientes WHERE mail=%s AND contraseña=%s",
-        (mail, pwd)
-    )
-    user = cur.fetchone()
+    cur.execute("SELECT * FROM productos WHERE categoria=%s", (categoria_id,))
+    productos=cur.fetchall()
+    if not productos:
+        abort(404, 'Producto no encontrado')
+    return jsonify(productos), 200
+# este endpoint trae todos los pedidos desde la tabla compras
+@app.route('/usuario/admin/pedidos', methods=['GET'])
+def ver_pedidos():
+    if 'usuario' not in session: #ESTA ES LA MANERA DE PREGUNTAR SI SE INICIÓ SESIÓN
+        print("Usuario no autenticado.")
+        return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
+    query = "SELECT * FROM compras;"
+    try:
+        coneccion = get_db()
+        with coneccion.cursor() as cursor:
+            cursor.execute(query)
+            resultado = cursor.fetchall()
+            pedidos = []
+            for row in resultado:
+                pedido = {
+                    'id': row['id'],
+                    'cliente': row['cliente_id'],
+                    'estado': row['estado'],
+                    'fecha': row['fecha'],
+                    'estado': row['entregado']
+                }
+                pedidos.append(pedido)
 
-    if not user: abort(401, 'Credenciales inválidas')
-    return jsonify(user), 200
+            return jsonify(pedidos), 200
+    except Exception as e:
+        print(f"Error en ver_pedidos: {e}")
+        return jsonify({'message': f'Error al obtener pedidos: {str(e)}'}), 500
+    finally:
+        coneccion.close()
+#este endpoint es para ver un pedido es especifico
+@app.route('/usuario/admin/pedidos/<int:id>', methods=['GET'])
+def ver_pedido(id):
+    if 'usuario' not in session: #Se comprueba que esté la sesion iniciada
+        print("Usuario no autenticado.")
+        return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
+    query = "SELECT * FROM detalle_compras WHERE compra_id=%s;"
+    try:
+        coneccion = get_db()
+        with coneccion.cursor() as cursor:
+            cursor.execute(query, (id,))
+            resultado = cursor.fetchall()
+            productos=[]
+            for row in resultado:
+                pedido = {
+                    'compra': resultado['compra_id'],
+                    'producto': resultado['producto_id'],
+                    'cantidad': resultado['estado'],
+                }
+                productos.append(pedido)
+            return jsonify(productos), 200
+    except Exception as e:
+        print(f"Error en ver_pedido: {e}")
+        return jsonify({'message': f'Error al obtener pedido: {str(e)}'}), 500
+    finally:
+        coneccion.close()
+# este endpoint esta diseñado para que cuando se reciba la id desde el front,
+# modifique los datos del producto, sin tocar la id, si la id no viene en la request
+# entonces es un producto nuevo 
+@app.route('/usuario/admin/modificar_producto', methods=['POST'])
+def modificar_producto():
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    data = request.json()
+    id = int(data.get("categoria"))
+    categoria = int(data.get("categoria"))
+    nombre=data.get("nombre")
+    precio = float(data.get("precio"))
+    stock=int(data.get("stock"))
+    descripcion=data.get("descripcion")
+    imagen=data.get("imagen")
+    cursor.execute("SELECT id, nombre, stock,descripcion,image_url FROM productos WHERE id=%s;", (id,))
+    producto = cursor.fetchone()
+    if producto:
+        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
+                       (categoria, nombre, precio, stock, descripcion, imagen, id,))
+    else:
+        cursor.execute("INSERT INTO nombre_de_la_tabla (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);",
+                        (categoria, nombre, descripcion, precio, imagen, stock,))
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return ("Producto modificado/agregado", 201)
+
+"""
+    
+"""
 
 
-@app.route('/api/compra', methods=['POST'])
-def api_compra():
+@app.route('/checkout', methods=['POST'])
+def pagar():
     data = request.get_json() or {}
     cliente_id = data.get('cliente_id')
     items = data.get('items')
@@ -76,10 +222,6 @@ def api_compra():
     try:
 
         # aca verificamos el  cliente
-        cur.execute("SELECT 1 FROM clientes WHERE id=%s", (cliente_id,))
-        if not cur.fetchone():
-            abort(400, 'cliente_id no válido')
-
         # ponemos la compra
         cur.execute("INSERT INTO compras(cliente_id) VALUES(%s)", (cliente_id,))
         compra_id = cur.lastrowid
@@ -100,65 +242,6 @@ def api_compra():
     except mysql.connector.Error as e:
         db.rollback()
         abort(400, str(e))
-
-@app.route('/api/productos/<int:producto_id>', methods=['PATCH'])
-
-def api_update_stock(producto_id):
-    data = request.get_json() or {}
-    new_stock = data.get('stock')
-    if new_stock is None:
-        abort(400, 'stock requerido')
-    db = get_db(); cur = db.cursor()
-    try:
-        cur.execute("UPDATE productos SET stock=%s WHERE id=%s", (new_stock, producto_id))
-        db.commit()
-        return jsonify({'msg':'Stock actualizado'}), 200
-    except mysql.connector.Error as e:
-        db.rollback()
-        abort(400, str(e))
-
-@app.route('/api/compras', methods=['GET'])
-def api_compras():
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("""
-                
-      SELECT c.id, c.cliente_id, c.fecha, c.entregado,
-             GROUP_CONCAT(CONCAT(dc.producto_id,':',dc.cantidad)) AS items
-      FROM compras c
-      JOIN detalle_compras dc ON c.id=dc.compra_id
-      GROUP BY c.id
-    """)
-
-    return jsonify(cur.fetchall()), 200
-
-
-
-
-@app.route('/api/productos/categorias/<categoria>', methods=['GET'])
-def api_categoria(categoria):
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT id,nombre,stock FROM productos WHERE categoria=%s", (categoria,))
-    return jsonify(cur.fetchall()), 200
-
-
-
-@app.route('/api/carrito', methods=['GET'])
-def api_get_carrito():
-    cliente_id = request.args.get('cliente_id', type=int)
-    if not cliente_id:
-        abort(400, 'Falta el cliente_id en query string')
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("""
-      SELECT c.id AS carrito_id,
-             c.producto_id,
-             p.nombre       AS nombre_producto,
-             p.stock        AS stock_disponible,
-             c.cantidad     AS cantidad_en_carrito
-      FROM carrito c
-      JOIN productos p ON c.producto_id = p.id
-      WHERE c.cliente_id = %s
-    """, (cliente_id,))
-    return jsonify({"cliente_id": cliente_id, "items": cur.fetchall()}), 200
 
 # agrego o actualizo item del carro.
 @app.route('/api/carrito', methods=['POST'])

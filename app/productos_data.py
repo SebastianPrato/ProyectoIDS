@@ -58,3 +58,13 @@ juegos = [
     },
  
 ]
+categorias=[
+    {"nombre":"Estrategia"},
+    {"nombre":"Azar"},
+    {"nombre":"Rol"},
+    {"nombre":"Cartas"},
+    {"nombre":"Habilidades"},
+    {"nombre":"Cooperativos"},
+    {"nombre":"Solitario"},
+    {"nombre":"Adultos"}
+]
