@@ -10,8 +10,7 @@
                 <form>
                     {% for categoria in categorias %}
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <input type="checkbox" class="custom-control-input" checked id="color-all">
-                        <label class="custom-control-label" for="price-all">{{categoria[nombre]}}</label>
+                        <a class="custom-control-label" href="{{url_for('categoria_detalle', categoria=3)}}">{{categoria}}</a>
                     </div>
                     {% endfor %}
                 </form>
@@ -30,7 +29,7 @@
                             <div class="text-center py-4">
                                 <a class="h6 text-decoration-none text-truncate" href="{{url_for('producto_detalle', producto_id= juego['id'] )}}">{{ juego.nombre }}</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>${{ juego.precio }}</h5><h6 class="text-muted ml-2">{{ juego.categoria }}</h6>
+                                    <h5>${{ juego.precio }}</h5>
                                 </div>
                             </div>
                         </div>

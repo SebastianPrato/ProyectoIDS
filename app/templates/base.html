@@ -33,7 +33,7 @@
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="d-inline-flex align-items-center h-100">
                     <a class="text-body mr-3" href="{{ url_for('about_us') }}">Sobre Nosotros</a>
-                    <a class="text-body mr-3" href="">FAQs</a>
+                    <a class="text-body mr-3" href="{{ url_for('faqs') }}">FAQs</a>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -41,8 +41,8 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Mi Cuenta</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">Iniciar sesión</button>
-                            <button class="dropdown-item" type="button">Registrarse</button>
+                            <a class="dropdown-item" href="{{ url_for('login') }}"type="button">Iniciar sesión</a>
+                            <a class="dropdown-item" href="{{ url_for('registro') }}" type="button">Registrarse</a>
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,6 @@
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a href="{{ url_for('home') }}" class="nav-item nav-link active">Inicio</a>
-                            <a href="detail.html" class="nav-item nav-link">Mis Compras</a>
                             <a href="{{ url_for('productos') }}" class="nav-item nav-link">Productos</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Compra <i class="fa fa-angle-down mt-1"></i></a>
@@ -108,7 +107,6 @@
                                     <a href="{{ url_for('checkout') }}" class="dropdown-item">Checkout</a>
                                 </div>
                             </div>
-                            <a href="{{ url_for('contacto') }}" class="nav-item nav-link">Contacto</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                             <a href="{{ url_for('carrito') }}" class="btn px-0 ml-3">
@@ -151,7 +149,6 @@
                         <h5 class="text-secondary text-uppercase mb-4">Mi Cuenta</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Inicio</a>
-                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Mis Compras</a>
                             <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Compra</a>
                             <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Carrito</a>
                             <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Checkout</a>

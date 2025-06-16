@@ -1,0 +1,20 @@
+#encabezado-faq {
+    background-color: #FFD333;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pregunta-faq {
+    color: #FFD333;
+    background-color: #3D464D;
+    padding: 10px 20px;
+    width: fit-content;
+    margin-top: 25px;
+    font-size: 20px;
+}
+
+.parrafo-faq {
+    text-align: justify;
+}
