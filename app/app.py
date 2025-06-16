@@ -24,26 +24,26 @@ def obtener_categoria(categoria):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home.html', categorias=[], productos=[], ingresos=[])
+    return render_template('public/home.html', categorias=[], productos=[], ingresos=[])
 
 @app.route('/miscompras')
 def miscompras():
-    return render_template('miscompras.html')
+    return render_template('public/miscompras.html')
 
 @app.route('/productos', methods=['GET'])
 def productos():
-    return render_template('productos.html', juegos=obtener_productos())
+    return render_template('public/productos.html', juegos=obtener_productos())
 
 @app.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
-   return render_template('detalle.html')
+   return render_template('public/detalle.html')
 
 
 
 
 @app.route('/carrito', methods=['GET'])
 def carrito():
-    return render_template('carrito.html')
+    return render_template('public/carrito.html')
 
 
 @app.route('/contacto', methods=['GET', 'POST'])
@@ -52,12 +52,12 @@ def contacto():
         # ponemos un formulario de contacto aca?
         flash('Mensaje enviado, ¡gracias!')
         return redirect(url_for('contacto'))
-    return render_template('contact.html')
+    return render_template('public/contact.html')
 
 
 @app.route('/carrito/checkout')
 def checkout():
-    return render_template('checkout.html')
+    return render_template('public/checkout.html')
 
 
 @app.route('/registro', methods=['GET', 'POST'])
@@ -72,7 +72,7 @@ def registro():
         # aca agarramos el form['nombre'], form['mail'], etc
         flash('Registro recibido, revisa tu email.')
         return redirect(url_for('home'))
-    return render_template('registro.html', form=form)
+    return render_template('public/registro.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -85,33 +85,33 @@ def login():
         flash('Login exitoso.')
         return redirect(url_for('home'))
 
-    return render_template('login.html', form=form)
+    return render_template('public/login.html', form=form)
 
 
 
 """
 @app.route('/productos/categorias', methods=['GET'])
 def categorias():
-    return render_template('categorias.html')
+    return render_template('public/categorias.html')
 """    
 @app.route('/productos/categorias/<categoria>', methods=['GET'])
 def categoria_detalle(categoria):
-    return render_template('categoria_detalle.html', categoria=obtener_categoria(categoria))
+    return render_template('public/categoria_detalle.html', categoria=obtener_categoria(categoria))
 
 
 @app.route('/about_us', methods=['GET'])
 def about_us():
-    return render_template('about_us.html')
+    return render_template('public/about_us.html')
 
 @app.route('/faq', methods=['GET'])
 def faq():
-    return render_template('faq.html')
+    return render_template('public/faq.html')
 
 #@app.route('/productos/<int:producto_id>', methods=['GET'])
 #def producto_detalle(producto_id):
 #    producto = next((j for j in juegos if j["id"] == producto_id), None)
 #    if producto:
-#        return render_template('producto_detalle.html', producto=producto)
+#        return render_template('public/producto_detalle.html', producto=producto)
 #    else:
 #        return "Producto no encontrado", 404
 
