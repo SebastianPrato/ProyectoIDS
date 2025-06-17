@@ -1,0 +1,47 @@
+{% extends "public/base.html" %}
+{% block productos %}
+
+<!-- Producto Individual Start -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Imagen del producto -->
+        <div class="col-md-6">
+            <img class="img-fluid w-100" src="{{ producto.imagen }}" alt="{{ producto.nombre }}">
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="col-md-6">
+            <h2 class="mb-3">{{ producto.nombre }}</h2>
+            <h4 class="text-primary mb-3">${{ producto.precio }}</h4>
+            <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
+            <div class="mb-3">
+                {% for i in range(1, 6) %}
+                    {% if i <= producto.rating %}
+                        <small class="fa fa-star text-primary"></small>
+                    {% elif i - 0.5 == producto.rating %}
+                        <small class="fa fa-star-half-alt text-primary"></small>
+                    {% else %}
+                        <small class="far fa-star text-primary"></small>
+                    {% endif %}
+                {% endfor %}
+                <small>({{ producto.rating }})</small>
+            </div>
+
+            <!-- Descripción -->
+            <p class="mb-4">{{ producto.descripcion }}</p>
+
+            <!-- Botones de acción -->
+            <div class="d-flex">
+                <button class="btn btn-outline-dark px-3 mr-2">
+                    <i class="fa fa-shopping-cart mr-1"></i> Agregar al carrito
+                </button>
+                <button class="btn btn-outline-dark px-3">
+                    <i class="far fa-heart mr-1"></i> Favorito
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Producto Individual End -->
+
+{% endblock %}

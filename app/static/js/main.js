@@ -1,104 +1,71 @@
-(function ($) {
-    "use strict";
-    
-    // Dropdown on mouse hover
-    $(document).ready(function () {
-        function toggleNavbarMethod() {
-            if ($(window).width() > 992) {
-                $('.navbar .dropdown').on('mouseover', function () {
-                    $('.dropdown-toggle', this).trigger('click');
-                }).on('mouseout', function () {
-                    $('.dropdown-toggle', this).trigger('click').blur();
-                });
-            } else {
-                $('.navbar .dropdown').off('mouseover').off('mouseout');
-            }
-        }
-        toggleNavbarMethod();
-        $(window).resize(toggleNavbarMethod);
-    });
-    
-    
-    // Back to top button
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 100) {
-            $('.back-to-top').fadeIn('slow');
-        } else {
-            $('.back-to-top').fadeOut('slow');
-        }
-    });
-    $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
-        return false;
-    });
+const cuentaCarritoElement = document.getElementById("cuenta-carrito");
+actualizarNumeroCarrito();
 
+function agregarAlCarrito(juego) {
+  const productos=localStorage.getItem("juegos") || []
+  if (!productos| memoria.length === 0) {
+    const producto = addproduct(juego);
+    localStorage.setItem("juegos", JSON.stringify([producto]));
+    actualizarNumeroCarrito();
+    return 1;
+  }
 
-    // Vendor carousel
-    $('.vendor-carousel').owlCarousel({
-        loop: true,
-        margin: 29,
-        nav: false,
-        autoplay: true,
-        smartSpeed: 1000,
-        responsive: {
-            0:{
-                items:2
-            },
-            576:{
-                items:3
-            },
-            768:{
-                items:4
-            },
-            992:{
-                items:5
-            },
-            1200:{
-                items:6
-            }
-        }
-    });
+  let items = JSON.parse(localStorage.getItem("juegos"));
+  const indice = items.findIndex(producto => producto.id === juego.id);
 
+  if (indice === -1) {
+    const producto = addproduct(juego);
+    items.push(producto);
+  } else {
+    items[indice].cantidad++;
+  }
 
-    // Related carousel
-    $('.related-carousel').owlCarousel({
-        loop: true,
-        margin: 29,
-        nav: false,
-        autoplay: true,
-        smartSpeed: 1000,
-        responsive: {
-            0:{
-                items:1
-            },
-            576:{
-                items:2
-            },
-            768:{
-                items:3
-            },
-            992:{
-                items:4
-            }
-        }
-    });
+  localStorage.setItem("juegos", JSON.stringify(items));
+  actualizarNumeroCarrito();
+  return items[indice]?.cantidad || 1;
+}
 
+function addproduct(juego) {
+  return {
+    nombre: juego.nombre,
+    cantidad: 1,
+    precio: juego.precio,
+    imagen: juego.imagen,
+  };
+}
 
-    // Product Quantity
-    $('.quantity button').on('click', function () {
-        var button = $(this);
-        var oldValue = button.parent().parent().find('input').val();
-        if (button.hasClass('btn-plus')) {
-            var newVal = parseFloat(oldValue) + 1;
-        } else {
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
-            } else {
-                newVal = 0;
-            }
-        }
-        button.parent().parent().find('input').val(newVal);
-    });
-    
-})(jQuery);
+function actualizarNumeroCarrito() {
+  let cuenta = 0;
+  const items = JSON.parse(localStorage.getItem("juegos"));
+  if (items && items.length > 0) {
+    cuenta = items.reduce((acum, current) => acum + current.cantidad, 0);
+  }
+  cuentaCarritoElement.innerText = cuenta;
+}
 
+function reiniciarCarrito() {
+  localStorage.removeItem("juegos");
+  localStorage.setItem("cantidad", 0);
+}
+
+function procesarJuego() {
+  let imagen = document.getElementById("imagen-juego")?.src;
+  let nombre = document.getElementById("nombre-juego")?.innerText;
+  let precioTexto = document.getElementById("precio-juego")?.innerText;
+  let precio = parseFloat(precioTexto.replace("$", ""));
+
+  // Usamos el nombre como ID única para este ejemplo
+  return {
+    imagen,
+    nombre,
+    precio
+  };
+}
+
+const boton = document.getElementById("boton-agregar-carrito");
+if (boton) {
+  boton.addEventListener("click", function () {
+    const juego = procesarJuego();
+    agregarAlCarrito(juego);
+  });
+}
