@@ -9,7 +9,7 @@ app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
 app.config['SESSION_COOKIE_DOMAIN'] = '127.0.0.1'
 app.config['SESSION_COOKIE_SECURE'] = False  # agrego el flash para cualquier mensaje para procesar "POSTs"
 
-API_BASE = "http://127.0.0.1:5000"
+API_BASE = "http://127.0.0.1:5001"
 
 categorias=["Estrategia", "Azar", "Rol", "Cartas", "Habilidad", "Cooperativos", "Solitario", "Adultos"]
 
@@ -90,7 +90,7 @@ def carrito():
 
 @app.route('/carrito/checkout')
 def checkout():
-    return render_template('checkout.html')
+    return render_template('public/checkout.html')
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
@@ -110,7 +110,7 @@ def registro():
     return render_template('registro.html', form=form)
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(port=5000, debug=True)
 
 
 
