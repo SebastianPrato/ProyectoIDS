@@ -22,9 +22,27 @@ def obtener_categoria(categoria):
 def home():
     return render_template('home.html', categorias=[], productos=[], ingresos=[])
 
+
+
+
+
 @app.route('/miscompras')
 def miscompras():
-    return render_template('miscompras.html')
+    datoscompra = {
+    "producto": "Teto Plush",
+    "precio": 71,
+    "cantidad": 2,
+    "total": 142,
+    "id": "#010408",
+    "entrega": "Por despachar",
+    "status": "Enviado / En tránsito"
+    }
+    return render_template('miscompras.html', compra=datoscompra)
+
+
+
+
+
 
 @app.route('/productos', methods=['GET'])
 def productos():
