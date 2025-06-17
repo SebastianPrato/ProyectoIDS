@@ -5,7 +5,7 @@ from utils.forms import LoginForm, RegisterForm
 import requests
 
 app = Flask(__name__)
-app.secret_key = 'cualquier_clave_para_flash'  # agrego el flash para cualquier mensaje para procesar "POSTs"
+app.secret_key = 'lazaro'  # agrego el flash para cualquier mensaje para procesar "POSTs"
 
 API_BASE = "http://localhost:5001"
 
@@ -17,7 +17,7 @@ def obtener_productos():
     return {}
 
 def obtener_categoria(categoria):
-    response=requests.get(f"{API_BASE}/api/productos/categorrias/{categoria}")
+    response=requests.get(f"{API_BASE}/api/productos/categorias/{categoria}")
     if response.status_code==200:
         return response.json()
     return {}
@@ -107,6 +107,10 @@ def about_us():
 def faq():
     return render_template('faq.html')
 
+@app.route('/pago', methods=['GET'])
+def pago():
+    return render_template('pago.html')
+
 #@app.route('/productos/<int:producto_id>', methods=['GET'])
 #def producto_detalle(producto_id):
 #    producto = next((j for j in juegos if j["id"] == producto_id), None)
@@ -116,7 +120,7 @@ def faq():
 #        return "Producto no encontrado", 404
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5001, debug=True)
 
 
 

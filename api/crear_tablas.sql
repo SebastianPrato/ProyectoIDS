@@ -1,3 +1,7 @@
+USE Ludoteca;
+
+SHOW TABLES;
+
 CREATE TABLE IF NOT EXISTS productos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   categoria INT NOT NULL,
@@ -51,3 +55,4 @@ CREATE TABLE IF NOT EXISTS carrito (
   FOREIGN KEY(cliente_id) REFERENCES clientes(id),
   FOREIGN KEY(producto_id) REFERENCES productos(id)
 );
+
