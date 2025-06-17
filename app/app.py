@@ -41,8 +41,29 @@ def obtener_productos_carrito():
 
 @app.route('/', methods=['GET'])
 def home():
-    productos=obtener_inicio()
-    return render_template('public/home.html', categorias=[], destacados=productos['destacados'], ingresos=productos['recientes'] )
+    return render_template('home.html', categorias=[], productos=[], ingresos=[])
+
+
+
+
+
+@app.route('/miscompras')
+def miscompras():
+    datoscompra = {
+    "producto": "Teto Plush",
+    "precio": 71,
+    "cantidad": 2,
+    "total": 142,
+    "id": "#010408",
+    "entrega": "Por despachar",
+    "status": "Enviado / En tránsito"
+    }
+    return render_template('miscompras.html', compra=datoscompra)
+
+
+
+
+
 
 @app.route('/productos', methods=['GET'])
 def productos():

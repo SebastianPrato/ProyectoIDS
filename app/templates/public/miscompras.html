@@ -6,6 +6,7 @@
         <h2 id="miscompras-titulo">Mis compras</h2>
     </div>
     <div id="miscompras-content">
+
         <div id="miscompras-barradecompra">
             <div id="compra-fechadecompra-wrapper">
                 <h4 id="compra-fechadecompra">8 de Junio</h4>
@@ -18,24 +19,27 @@
                 </div>
                 <div class="compra-datos-section" id="compra-detallesproducto">
                     <div class="detalleproducto" id="nombreproductoproducto">
-                        <h5>Producto: Teto Plushie</h5>
+                        <h5>Producto: {{compra["producto"]}}</h5>
                     </div>
                     <div class="detalleproducto" id="precioproducto">
-                        <h5>Precio por unidad: $71</h5>
+                        <h5>Precio por unidad: ${{compra["precio"]}}</h5>
                     </div>
                     <div class="detalleproducto" id="cantidadunidades">
-                        <h5>Cantidad de unidades: 2</h5>
+                        <h5>Cantidad de unidades: {{compra["cantidad"]}}</h5>
                     </div>
                 </div>
                 <div class="compra-datos-section" id="compra-detallescompra">
                     <div class="detallecompra" id="idcompra">
-                        <h5>#010408</h5>
+                        <h5>{{compra["id"]}}</h5>
                     </div>
-                    <div class="detallecompra" id="fechacompra">
-                        <h5>Por despachar</h5>
+                    <div class="detallecompra" id="totalcompra">
+                        <h5>Total de la compra: ${{compra["total"]}}</h5>
+                    </div>
+                    <div class="detallecompra" id="fechaentrega">
+                        <h5>{{compra["entrega"]}}</h5>
                     </div>
                     <div class="detallecompra" id="estatuscompra">
-                        <h5>Enviado / En tránsito</h5>
+                        <h5>{{compra["status"]}}</h5>
                     </div>
                 </div>
                 <div class="compra-datos-section" id="opciones">
@@ -52,6 +56,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </div>
 
