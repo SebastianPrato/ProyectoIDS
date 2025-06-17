@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS productos (
   categoria INT NOT NULL,
   nombre VARCHAR(100) NOT NULL,
   descripcion VARCHAR(250) NOT NULL,
-  precio INT NOT NULL,
   imagen VARCHAR(250) NOT NULL,
   stock INT NOT NULL
 );
