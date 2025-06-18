@@ -106,4 +106,25 @@ def crear_categoria():
     coneccion.commit()
     cursor.close()
     coneccion.close()
-    return ("Categoria agregada", 201)
+    return jsonify({"message":"Categoria agregada"}), 201
+
+@admin_bp.route('/usuario/admin/editar_categoria/<int:categoria_id>', methods=['PUT'])
+def editar_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    data = request.get_json()
+    nuevo_nombre = data.get("nombre")
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.execute("UPDATE categoria SET nombre=%s WHERE id=%s",
+                       (nuevo_nombre, categoria_id,))
+        coneccion.commit()
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message":"Categoria editada"}), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404
+
