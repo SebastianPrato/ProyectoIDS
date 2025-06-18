@@ -128,3 +128,20 @@ def editar_categoria(categoria_id):
     coneccion.close()
     return jsonify({"message":"Categoria no encontrada"}), 404
 
+@admin_bp.route('/usuario/admin/eliminar_categoria/<int:categoria_id>', methods=['DELETE'])
+def eliminar_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.execute("DELETE FROM categoria WHERE id=%s",
+                       (categoria_id,))
+        coneccion.commit()
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message":"Categoria eliminada"}), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404
