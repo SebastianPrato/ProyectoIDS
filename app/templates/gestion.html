@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>LUDOTECA</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="{{  url_for('static', filename= 'lib/animate/animate.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'lib/owlcarousel/assets/owl.carousel.min.css')}}">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css')}}">
+</head>
+
+<body class="vh-100">
+    <div class="container-fluid">
+        <div class="row bg-secondary py-1 px-xl-5">
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-light dropdown-toggle" href="{{ url_for('home') }}">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+            <div class="col-lg-4">
+                <a href="" class="text-decoration-none">
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">LUDO</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">TECA</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <body class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        <div class="navbar-nav mr-auto py-0">
+            <a href="{{ url_for('cargar') }}" class="nav-item nav-link active">Cargar producto</a>
+            <a href="{{ url_for('ver_pedidos') }}" class="nav-item nav-link">Ver pedidos</a>
+    </div>
+  <div class="container">
+    <h1>Gestión de productos</h1>
+    <h2>¡Bienvenido!</h2>
+    <form method="POST">
+        <label for="juego">Id del producto:</label>
+        <input type="text" id="producto" name="producto" required>
+        <button type="submit">Buscar producto</button>
+    </form>
+  </div>
+</body>

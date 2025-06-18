@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>LUDOTECA</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link rel="stylesheet" href="{{  url_for('static', filename= 'lib/animate/animate.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'lib/owlcarousel/assets/owl.carousel.min.css')}}">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css')}}">
+</head>
+<body>
+    <div>
+        {% if modificar %}
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <div>
+                            <img id="imagen-juego" src="static/img{{producto['imagen']}}" alt="{{producto['nombre']}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div>
+            {% if modificar %}
+              <h2>Modificar</h2>
+            {% else %}
+              <h2>Cargar</h2>
+            {% endif %}
+              <form method="POST">
+                <h3 id="producto-id">{{producto[id]}}</h3>
+                <div>
+                    <label for="nombre">Nombre del producto:</label>
+                    <input type="text" name="nombre" value="{{producto['nombre']}}" required>
+                </div>
+                <div>
+                    <label for="nombre">Categoria:</label>
+                    <input type="number" name="categoria"  min="1" max="8" value="{{producto['categoria']}}" required>
+                </div>
+                <div>
+                    <label for="descripcion">Descripcion:</label>
+                    <input type="text" name="descripcion" value="{{producto['descripcion']}}" required>
+                </div>
+                <div>
+                    <label for="precio">Precio:</label>
+                    <input type="number" name="precio" value="{{producto['precio']}}"required>
+                </div>
+                <div>
+                    <label for="imagen">Imagen:</label>
+                    <input type="text" name="imagen" value="{{producto['imagen']}}" required>
+                </div>
+                <div>
+                    <label for="stock">Stock:</label>
+                    <input type="number" name="stock" value="{{producto['stock']}}" required>
+                </div>
+                <div>
+                    <div>
+                        <button id="guardar-producto" type="submit">Guardar</button>
+                    </div>
+                    {% if modificar %}
+                    <div>
+                        <button type="button" onclick="eliminarProducto(producto-id)">Borrar Producto</button>
+                        <script src="{{ url_for('static', filename='js/gestionar.js') }}"></script>
+                    </div>
+                    {% endif %}
+                </div>
+              </form>
+        </div>
+    </div>
+</body>
