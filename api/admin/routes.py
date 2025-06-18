@@ -94,3 +94,16 @@ def modificar_producto():
     cursor.close()
     coneccion.close()
     return ("Producto modificado/agregado", 201)
+
+@admin_bp.route('/usuario/admin/crear_categoria', methods=['POST'])
+def crear_categoria():
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    data = request.get_json()
+    nombre = data.get("nombre")
+    cursor.execute("INSERT INTO categoria (nombre) VALUES (%s);",
+                  (nombre,))
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return ("Categoria agregada", 201)
