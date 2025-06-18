@@ -1,22 +1,19 @@
 import mysql.connector
-from flask import Flask, request, jsonify, abort, session, redirect
+from flask import Flask, request, jsonify, abort, redirect, Blueprint
+import requests
 
 from flask_login import LoginManager
-FRONT_BASE = "http://127.0.0.1:5000"
-app = Flask(__name__)
-app.secret_key = 'clave-super-secreta' 
-app.config['SESSION_COOKIE_DOMAIN'] = '127.0.0.1'  # Configura para localhost
-app.config['SESSION_COOKIE_SECURE'] = False        # Solo si no estás usando HTTPS
+FRONT_BASE = "http://localhost:5000"
 
 public_bp = Blueprint('public', __name__)
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="root", password="", database="ludoteca",
+        host="localhost", user="root", password="", database="ludoteca", use_pure=True,
         autocommit=False  # manejamos transacciones manualmente
     )
 
-@app.route('/', methods=['GET'])
+@public_bp.route('/', methods=['GET'])
 def inicio():
     coneccion=get_db()
     cursor= coneccion.cursor(dictionary=True)
@@ -28,7 +25,6 @@ def inicio():
     coneccion.close()
     return jsonify({'recientes':recientes, 'destacados':destacados}), 200
 
-
 @public_bp.route('/productos', methods=['GET'])
 def productos():
     coneccion = get_db()
@@ -38,7 +34,6 @@ def productos():
     cursor.close()
     coneccion.close()
     return jsonify(productos), 200
-
 
 @public_bp.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
@@ -51,9 +46,7 @@ def producto_detalle(producto_id):
         abort(404, 'Producto no encontrado')
     return jsonify(prod), 200
 
-
 @public_bp.route('/usuarios/registro', methods=['POST'])
-@app.route('/registro', methods=['POST'])
 def registro():
     data=request.get_json()
     query_insert = """
@@ -73,6 +66,7 @@ def registro():
         coneccion.commit()
         return redirect(f"{FRONT_BASE}/login")
     except Exception as e:
+        print(f"Error al registrar usuario: {e}")
         return jsonify({'message': f'Error al registrar usuario: {str(e)}'}), 500
     finally:
         if cursor:
@@ -86,7 +80,6 @@ def registro():
             except Exception as e:
                 print(f"Error al cerrar la conexión: {e}")
 
-
 @public_bp.route('/usuarios/login', methods=['POST'])
 def login():
     try:
@@ -97,11 +90,7 @@ def login():
             cursor.execute(query, (user['email'],))
             usuario = cursor.fetchone()
             if usuario and usuario['contrasenia']==user['contrasenia']: ## Verificar si el usuario existe y la contraseña es correcta
-                session['usuario'] = usuario['id']
-                session['nombre'] = usuario['nombre']
-                if usuario['administrador']:
-                    return redirect(f"{FRONT_BASE}/admin")  # Redirige a /admin
-                return redirect(f"{FRONT_BASE}/")  # Redirigir a /
+                return jsonify({'auth': True, 'id':usuario['id'], 'nombre':usuario['nombre']}), 200
             else:
                 return jsonify({'auth': False, "message": "Credenciales incorrectas"}), 401
     except Exception as e:
@@ -109,13 +98,6 @@ def login():
         return jsonify({'auth': False, 'message': f'Error al iniciar sesión: {str(e)}'}), 500
     finally:
         connection.close()
-
-
-@public_bp.route('/usuarios/logout', methods=['POST'])
-def logout():
-    session.clear()  # Limpiar todas las variables de sesión
-    return redirect(f"{FRONT_BASE}/login")
-
 
 @public_bp.route('/productos/categoria/<int:categoria_id>', methods=['GET'])
 def api_categoria(categoria_id):
@@ -125,94 +107,6 @@ def api_categoria(categoria_id):
     if not productos:
         abort(404, 'Producto no encontrado')
     return jsonify(productos), 200
-
-
-@public_bp.route('/usuario/admin/pedidos', methods=['GET'])
-def ver_pedidos():
-    if 'usuario' not in session: #ESTA ES LA MANERA DE PREGUNTAR SI SE INICIÓ SESIÓN
-        print("Usuario no autenticado.")
-        return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
-    query = "SELECT * FROM compras;"
-    try:
-        coneccion = get_db()
-        with coneccion.cursor() as cursor:
-            cursor.execute(query)
-            resultado = cursor.fetchall()
-            pedidos = []
-            for row in resultado:
-                pedido = {
-                    'id': row['id'],
-                    'cliente': row['cliente_id'],
-                    'estado': row['estado'],
-                    'fecha': row['fecha'],
-                    'estado': row['entregado']
-                }
-                pedidos.append(pedido)
-
-            return jsonify(pedidos), 200
-    except Exception as e:
-        print(f"Error en ver_pedidos: {e}")
-        return jsonify({'message': f'Error al obtener pedidos: {str(e)}'}), 500
-    finally:
-        coneccion.close()
-
-
-#este endpoint es para ver un pedido es especifico
-@public_bp.route('/usuario/admin/pedidos/<int:id>', methods=['GET'])
-def ver_pedido(id):
-    if 'usuario' not in session: #Se comprueba que esté la sesion iniciada
-        print("Usuario no autenticado.")
-        return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
-    query = "SELECT * FROM detalle_compras WHERE compra_id=%s;"
-    try:
-        coneccion = get_db()
-        with coneccion.cursor() as cursor:
-            cursor.execute(query, (id,))
-            resultado = cursor.fetchall()
-            productos=[]
-            for row in resultado:
-                pedido = {
-                    'compra': resultado['compra_id'],
-                    'producto': resultado['producto_id'],
-                    'cantidad': resultado['estado'],
-                }
-                productos.append(pedido)
-            return jsonify(productos), 200
-    except Exception as e:
-        print(f"Error en ver_pedido: {e}")
-        return jsonify({'message': f'Error al obtener pedido: {str(e)}'}), 500
-    finally:
-        coneccion.close()
-
-
-# este endpoint esta diseñado para que cuando se reciba la id desde el front,
-# modifique los datos del producto, sin tocar la id, si la id no viene en la request
-# entonces es un producto nuevo 
-@public_bp.route('/usuario/admin/modificar_producto', methods=['POST'])
-def modificar_producto():
-    coneccion = get_db()
-    cursor = coneccion.cursor(dictionary=True)
-    data = request.get_json()
-    id = int(data.get("categoria"))
-    categoria = int(data.get("categoria"))
-    nombre=data.get("nombre")
-    precio = float(data.get("precio"))
-    stock=int(data.get("stock"))
-    descripcion=data.get("descripcion")
-    imagen=data.get("imagen")
-    cursor.execute("SELECT id, nombre, stock,descripcion,image_url FROM productos WHERE id=%s;", (id,))
-    producto = cursor.fetchone()
-    if producto:
-        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
-                       (categoria, nombre, precio, stock, descripcion, imagen, id,))
-    else:
-        cursor.execute("INSERT INTO nombre_de_la_tabla (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);",
-                        (categoria, nombre, descripcion, precio, imagen, stock,))
-    coneccion.commit()
-    cursor.close()
-    coneccion.close()
-    return ("Producto modificado/agregado", 201)
-
 
 @public_bp.route('/compra', methods=['POST'])
 def api_compra():
@@ -279,7 +173,6 @@ def api_compras():
     """)
 
     return jsonify(cur.fetchall()), 200
-
 
 @public_bp.route('/carrito', methods=['GET'])
 def api_get_carrito():

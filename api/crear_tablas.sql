@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS productos (
   nombre VARCHAR(100) NOT NULL,
   descripcion VARCHAR(250) NOT NULL,
   imagen VARCHAR(250) NOT NULL,
-  stock INT NOT NULL
+  stock INT NOT NULL,
+  precio DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   apellido VARCHAR(50) NOT NULL,
   mail VARCHAR(100) UNIQUE NOT NULL,
   contrasenia VARCHAR(255) NOT NULL,
-  administrador BOOLEAN DEFAULT FALSE,
+  administrador BOOLEAN NOT NULL DEFAULT FALSE,
 );
 
 CREATE TABLE IF NOT EXISTS compras (
@@ -21,7 +22,7 @@ CREATE TABLE IF NOT EXISTS compras (
   cliente_id INT NOT NULL,
   fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
   entregado BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY(cliente_id) REFERENCES clientes(id)
+  FOREIGN KEY(cliente_id) REFERENCES usuarios(id)
 );
 
 CREATE TABLE IF NOT EXISTS detalle_compras (
