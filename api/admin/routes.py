@@ -145,3 +145,13 @@ def eliminar_categoria(categoria_id):
     cursor.close()
     coneccion.close()
     return jsonify({"message":"Categoria no encontrada"}), 404
+
+@admin_bp.route('usuario/admin/listar_categorias', methods=['GET'])
+def listar_categorias():
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM categoria")
+    categorias = cursor.fetchall()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"categorias": categorias}), 200
