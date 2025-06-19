@@ -1,0 +1,63 @@
+{% extends "public/base.html" %}
+{% block aboutus %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
+
+<header id="encabezado-faq">
+    <h1>Preguntas Frecuentes</h1>
+</header>
+
+<main class="container">
+    <h4 class="pregunta-faq">🧩 ¿Qué tipo de productos venden?</h4>
+    <p class="parrafo-faq">
+        Nos especializamos en juegos de mesa de todo tipo: familiares, estratégicos, infantiles, de cartas, party games,
+        clásicos y modernos. Trabajamos con marcas nacionales e internacionales de primera línea.
+    </p>
+
+    <h4 class="pregunta-faq">📦 ¿Cómo puedo comprar en LudoTeca?</h4>
+    <p class="parrafo-faq">
+        Simplemente elegí tus productos, agregalos al carrito, completá tus datos y seleccioná la forma de pago y
+        entrega. ¡Es rápido, fácil y seguro!
+    </p>
+
+    <h4 class="pregunta-faq">🚚 ¿Qué opciones de entrega tienen?</h4>
+    <p class="parrafo-faq">
+        Podés:
+    </p>
+
+    <ul>
+        <li>Retirar en local</li>
+        <li>Envíos a domicilio</li>
+    </ul>
+
+    <h4 class="pregunta-faq">💳 ¿Qué medios de pago aceptan?</h4>
+    <p class="parrafo-faq">
+        Aceptamos tarjetas de crédito, débito, transferencias bancarias y medios de pago digitales. Todos los pagos se
+        realizan a través de plataformas seguras.
+    </p>
+
+    <h4 class="pregunta-faq">🕒 ¿Cuánto tarda en llegar mi pedido?</h4>
+    <p class="parrafo-faq">
+        El tiempo de entrega depende de tu ubicación y el método de envío elegido. En general, los retiros en local
+        están disponibles dentro de las 24 a 48 hs hábiles. Los envíos a domicilio pueden demorar entre 2 y 7 días
+        hábiles.
+    </p>
+
+    <h4 class="pregunta-faq">📍 ¿Dónde están ubicados?</h4>
+    <p class="parrafo-faq">
+        Nuestro local se encuentra en ... También podés encontrarnos en redes sociales y contactarnos
+        por cualquier consulta.
+    </p>
+
+    <h4 class="pregunta-faq">✅ ¿Los productos tienen garantía?</h4>
+    <p class="parrafo-faq">
+        Sí. Todos nuestros productos son originales y tienen garantía por fallas de fábrica. Si recibís un producto con
+        algún defecto, comunicate con nosotros dentro de los primeros 7 días hábiles.
+    </p>
+
+    <h4 class="pregunta-faq">🌎 ¿Realizan envíos a todo el país?</h4>
+    <p class="parrafo-faq">
+        Sí, hacemos envíos a todo el territorio argentino.
+    </p>
+</main>
+{% endblock %}

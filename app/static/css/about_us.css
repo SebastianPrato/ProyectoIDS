@@ -1,0 +1,15 @@
+#encabezado-about-us {
+    background-color: #FFD333;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.parrafo-about-us {
+    text-align: justify;
+}
+
+#nombregrupal {
+    color: #FFD333;
+}
