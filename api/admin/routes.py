@@ -94,3 +94,64 @@ def modificar_producto():
     cursor.close()
     coneccion.close()
     return ("Producto modificado/agregado", 201)
+
+@admin_bp.route('/usuario/admin/crear_categoria', methods=['POST'])
+def crear_categoria():
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    data = request.get_json()
+    nombre = data.get("nombre")
+    cursor.execute("INSERT INTO categoria (nombre) VALUES (%s);",
+                  (nombre,))
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria agregada"}), 201
+
+@admin_bp.route('/usuario/admin/editar_categoria/<int:categoria_id>', methods=['PUT'])
+def editar_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    data = request.get_json()
+    nuevo_nombre = data.get("nombre")
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.execute("UPDATE categoria SET nombre=%s WHERE id=%s",
+                       (nuevo_nombre, categoria_id,))
+        coneccion.commit()
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message":"Categoria editada"}), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404
+
+@admin_bp.route('/usuario/admin/eliminar_categoria/<int:categoria_id>', methods=['DELETE'])
+def eliminar_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.execute("DELETE FROM categoria WHERE id=%s",
+                       (categoria_id,))
+        coneccion.commit()
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message":"Categoria eliminada"}), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404
+
+@admin_bp.route('usuario/admin/listar_categorias', methods=['GET'])
+def listar_categorias():
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM categoria")
+    categorias = cursor.fetchall()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"categorias": categorias}), 200
