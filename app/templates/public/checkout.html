@@ -1,0 +1,115 @@
+{% extends "public/base.html" %}
+{% block checkout %}
+<!-- Checkout Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-lg-8">
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Dirección de Envío</span></h5>
+            <div class="bg-light p-30 mb-5">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label>Nombre</label>
+                        <input class="form-control" type="text" placeholder="Nestor">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Apellido</label>
+                        <input class="form-control" type="text" placeholder="Palavecino">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>E-mail</label>
+                        <input class="form-control" type="text" placeholder="ejemplo@fi.uba.ar">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Teléfono</label>
+                        <input class="form-control" type="text" placeholder="+123 456 789">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Dirección </label>
+                        <input class="form-control" type="text" placeholder="Calle 123">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>País</label>
+                        <select class="custom-select">
+                            <option selected>Argentina</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Ciudad</label>
+                        <input class="form-control" type="text" placeholder="Buenos Aires">
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Provincia</label>
+                        <select class="custom-select">
+                            <option selected>Buenos Aires</option>
+                            <option selected>Catamarca</option>
+                            <option selected>Chaco</option>
+                            <option selected>Chubut</option>
+                            <option selected>Córdoba</option>
+                            <option selected>Corrientes</option>
+                            <option selected>Ciudad Autonóma de Buenos Aires</option>
+                            <option selected>Entre Ríos</option>
+                            <option selected>Formosa</option>
+                            <option selected>Jujuy</option>
+                            <option selected>La Pampa</option>
+                            <option selected>La Rioja</option>
+                            <option selected>Mendoza</option>
+                            <option selected>Misiones</option>
+                            <option selected>Neuquén</option>
+                            <option selected>Río Negro</option>
+                            <option selected>Salta</option>
+                            <option selected>San Juan </option>
+                            <option selected>San Luis</option>
+                            <option selected>Santa Cruz</option>
+                            <option selected>Santa Fé</option>
+                            <option selected>Santiago del Estero</option>
+                            <option selected>Tierra del Fuego</option>
+                            <option selected>Tucumán</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Código Postal</label>
+                        <input class="form-control" type="text" placeholder="123">
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="newaccount">
+                            <label class="custom-control-label" for="newaccount">Crear Cuenta</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="col-lg-4">
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Resumen de Compra</span></h5>
+            <div class="bg-light p-30 mb-5">
+                <div class="border-bottom">
+                    <h6 class="mb-3">Productos</h6>
+                    {% for seleccionado in seleccionados %}
+                    <div class="d-flex justify-content-between">
+                        <p>{{seleccionado['nombre']}}</p>
+                        <p>{{seleccionado['precio']}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="pt-2">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5>Total</h5>
+                        <h5>$140</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-5">
+                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Metodos de pago</span></h5>
+                <div class="bg-light p-30">
+                    <div class="form-group">
+                        <div class="custom-control custom-radio">
+                            <label for="paypal">Debito/Credito</label>
+                        </div>
+                    </div>
+                    <a class="btn btn-block btn-primary font-weight-bold py-3" href='{{ url_for("pagar") }}'> Pagar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Checkout End -->
+{% endblock %}

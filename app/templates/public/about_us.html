@@ -1,0 +1,31 @@
+{% extends "public/base.html" %}
+{% block aboutus %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about_us.css') }}">
+
+<header id="encabezado-about-us">
+    <h1>Nuestra Empresa</h1>
+</header>
+
+<main class="container">
+    <p class="mt-4 parrafo-about-us">
+        LudoTeca es una nueva unidad de negocio lanzada por <span id="nombregrupal">Lanzi-flaskeados Alfa Buena Maravilla Onda Dinamita Escuadron Lobo</span>, buscando posicionarse entre las mejores plataformas de comercio electrónico vinculadas a los juegos de mesa
+        en Argentina.
+        <br>
+        Los usuarios podrán buscar sus productos, comprarlos y pagarlos, para luego elegir retirar en el local sin
+        ningún costo adicional o elegir envio a domicilio con costo extra.
+        <br>
+        <br>
+        LudoTeca trabaja con proveedores y mercadería de primera línea, nacionales e internacionales, asegurando el
+        origen y la trazabilidad de sus productos.
+        <br>
+        Su actividad principal consiste en la comercialización y distribución de juegos de mesa. En la actualidad,
+        se ubica como una de las empresas líderes del rubro en el ámbito de la República Argentina. Se destaca por
+        brindar un trato profesional y personalizado, ejerciendo un rol social y asegurando la disponibilidad de
+        artículos.
+        <br>
+        <br>
+        Sumate a nuestra comunidad.
+    </p>
+</main>
+{% endblock %}
