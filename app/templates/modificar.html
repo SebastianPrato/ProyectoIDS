@@ -1,89 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <title>LUDOTECA</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+{% block modificar %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">{{ 'Modificar Producto' if modificar else 'Cargar Producto' }}</h2>
+                <form method="POST">
+                    {% if modificar %}
+                        <input type="hidden" name="producto_id" value="{{ producto['id'] }}">
+                    {% endif %}
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
-
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link rel="stylesheet" href="{{  url_for('static', filename= 'lib/animate/animate.min.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'lib/owlcarousel/assets/owl.carousel.min.css')}}">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css')}}">
-</head>
-<body>
-    <div>
-        {% if modificar %}
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <div>
-                            <img id="imagen-juego" src="static/img{{producto['imagen']}}" alt="{{producto['nombre']}}">
-                        </div>
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del producto</label>
+                        <input type="text" class="form-control" name="nombre" value="{{ producto['nombre'] }}" required>
                     </div>
-                </div>
+
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="number" class="form-control" name="categoria" min="1" max="8" value="{{ producto['categoria'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" name="descripcion" value="{{ producto['descripcion'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" class="form-control" name="precio" value="{{ producto['precio'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imagen" class="form-label">Imagen (URL o ruta relativa)</label>
+                        <input type="text" class="form-control" name="imagen" value="{{ producto['imagen'] }}" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" name="stock" value="{{ producto['stock'] }}" required>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            Guardar
+                        </button>
+                        {% if modificar %}
+                            <button type="button" class="btn btn-danger" onclick="eliminarProducto(producto['id'])">
+                                Borrar Producto
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
             </div>
         </div>
-        {% endif %}
-        <div>
-            {% if modificar %}
-              <h2>Modificar</h2>
-            {% else %}
-              <h2>Cargar</h2>
-            {% endif %}
-              <form method="POST">
-                <h3 id="producto-id">{{producto[id]}}</h3>
-                <div>
-                    <label for="nombre">Nombre del producto:</label>
-                    <input type="text" name="nombre" value="{{producto['nombre']}}" required>
-                </div>
-                <div>
-                    <label for="nombre">Categoria:</label>
-                    <input type="number" name="categoria"  min="1" max="8" value="{{producto['categoria']}}" required>
-                </div>
-                <div>
-                    <label for="descripcion">Descripcion:</label>
-                    <input type="text" name="descripcion" value="{{producto['descripcion']}}" required>
-                </div>
-                <div>
-                    <label for="precio">Precio:</label>
-                    <input type="number" name="precio" value="{{producto['precio']}}"required>
-                </div>
-                <div>
-                    <label for="imagen">Imagen:</label>
-                    <input type="text" name="imagen" value="{{producto['imagen']}}" required>
-                </div>
-                <div>
-                    <label for="stock">Stock:</label>
-                    <input type="number" name="stock" value="{{producto['stock']}}" required>
-                </div>
-                <div>
-                    <div>
-                        <button id="guardar-producto" type="submit">Guardar</button>
-                    </div>
-                    {% if modificar %}
-                    <div>
-                        <button type="button" onclick="eliminarProducto(producto-id)">Borrar Producto</button>
-                        <script src="{{ url_for('static', filename='js/gestionar.js') }}"></script>
-                    </div>
-                    {% endif %}
-                </div>
-              </form>
-        </div>
     </div>
-</body>
+</div>
+
+{% if modificar %}
+    <script src="{{ url_for('static', filename='js/gestionar.js') }}"></script>
+{% endif %}
+
+</div>
+{% endif %}
+{% endblock %}

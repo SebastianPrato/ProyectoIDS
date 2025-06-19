@@ -37,11 +37,27 @@ def cargar():
     return render_template('modificar.html', producto={}, modificar= False )
 
 
+from flask import flash
+
 @app.route('/admin', methods=['GET', 'POST'])
 def home_admin():
     if request.method == "POST":
         id = request.form["producto"]
         if not id:
+            flash("Debes ingresar un ID", "warning")
             return redirect(url_for('home_admin'))
-        return redirect(url_for('modificar', id_producto=int(id)))
+
+        try:
+            id_int = int(id)
+        except ValueError:
+            flash("ID inválido", "warning")
+            return redirect(url_for('home_admin'))
+
+        producto = obtener_producto(id_int)
+        if not producto:
+            flash("No se encontró ningún producto con ese ID", "warning")
+            return redirect(url_for('home_admin'))
+
+        return redirect(url_for('modificar', id_producto=id_int))
+
     return render_template('gestion.html')

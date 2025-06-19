@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from productos_data import juegos, categorias #diccionario de ejemplo, luego cambiar por extraccion de la base datos
 from utils.forms import LoginForm, RegisterForm
 import requests
 import sys
