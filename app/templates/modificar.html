@@ -8,7 +8,7 @@
                 <h2 class="text-center mb-4">{{ 'Modificar Producto' if modificar else 'Cargar Producto' }}</h2>
                 <form method="POST">
                     {% if modificar %}
-                        <input type="hidden" name="producto_id" value="{{ producto['id'] }}">
+                    <input type="hidden" id="producto-id" value="{{ producto['id'] }}">
                     {% endif %}
 
                     <div class="mb-3">
@@ -46,7 +46,7 @@
                             Guardar
                         </button>
                         {% if modificar %}
-                            <button type="button" class="btn btn-danger" onclick="eliminarProducto(producto['id'])">
+                            <button type="button" class="btn btn-danger" onclick="eliminarProducto()">
                                 Borrar Producto
                             </button>
                         {% endif %}
@@ -56,11 +56,5 @@
         </div>
     </div>
 </div>
-
-{% if modificar %}
-    <script src="{{ url_for('static', filename='js/gestionar.js') }}"></script>
-{% endif %}
-
-</div>
-{% endif %}
+<script src="{{url_for('static', filename='js/gestionar.js')}}" ></script>
 {% endblock %}

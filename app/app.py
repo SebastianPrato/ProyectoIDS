@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from utils.forms import LoginForm, RegisterForm
+from flask_cors import CORS
 import requests
 import sys
-print("Python usado:", sys.executable)
 app = Flask(__name__)
-app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
+app.secret_key = 'clave-super-secreta'
 app.config['SESSION_COOKIE_DOMAIN'] = '127.0.0.1'
-app.config['SESSION_COOKIE_SECURE'] = False  # agrego el flash para cualquier mensaje para procesar "POSTs"
+app.config['SESSION_COOKIE_SECURE'] = False
+CORS(app)
 
 API_BASE = "http://127.0.0.1:5000"
 
@@ -35,6 +36,19 @@ def obtener_inicio():
     if response.status_code==200:
         return response.json()
     return {}
+def gestionar_stock(producto, id):
+    response=requests.post(f"{API_BASE}/usuario/admin/modificar/{id}", json=producto)
+    if response.status_code==201:
+        return True
+    return False
+
+def cargar_producto(producto):
+    response=requests.post(f"{API_BASE}/usuario/admin/cargar", json=producto)
+    if response.status_code==201:
+        return True
+    return False
+
+
 def obtener_productos_carrito():
     response=requests.get(f"{API_BASE}/carrito")
     if response.status_code==200:
@@ -103,10 +117,69 @@ def registro():
         usuario={"nombre": nombre, "apellido": apellido, "email":email, "contrasenia":contrasenia}
         response = requests.post(f"{API_BASE}/registro", json=usuario)
         if response.status_code == 200:
-            return redirect(url_for('login'))  # O tu ruta de login
+            return redirect(url_for('login')) 
         else:
             flash("Hubo un error al registrar. Intenta nuevamente.") 
     return render_template('registro.html', form=form)
+@app.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
+def modificar(id_producto):
+    juego=obtener_producto(id_producto)
+    if request.method== "POST":
+        nombre=request.form["nombre"]
+        categoria=request.form["categoria"]
+        descripcion=request.form["descripcion"]
+        precio=request.form["precio"]
+        imagen=request.form["imagen"]
+        stock=request.form["stock"]
+        producto_m={"nombre": nombre, "categoria": categoria, "descripcion": descripcion, "precio": precio, "imagen": imagen, "stock": stock, "crear":False}
+        ok=gestionar_stock(producto_m, id=id_producto)
+        if not ok:
+            flash("Error al guardar producto", "error")
+        else:
+            flash("Producto agregado con éxito", "success")
+        return redirect(url_for("modificar", id_producto=juego['id'])) 
+    return render_template('modificar.html', producto=juego, modificar= True )
+
+@app.route('/admin/cargar', methods=['GET', 'POST']) 
+def cargar():
+    if request.method== "POST":
+        nombre=request.form["nombre"]
+        categoria=request.form["categoria"]
+        descripcion=request.form["descripcion"]
+        precio=request.form["precio"]
+        imagen=request.form["imagen"]
+        stock=request.form["stock"]
+        producto={"nombre": nombre, "categoria": categoria, "descripcion": descripcion, "precio": precio, "imagen": imagen, "stock": stock, "crear":True}
+        ok=cargar_producto(producto)
+        if not ok:
+            flash("Error al guardar producto", "error")
+        else:
+            flash("Producto agregado con éxito", "success")
+        return redirect(url_for("cargar", modificar=False))
+    return render_template('modificar.html', producto={}, modificar= False )
+@app.route('/admin', methods=['GET', 'POST'])
+def home_admin():
+    if request.method == "POST":
+        id = request.form["producto"]
+        if not id:
+            flash("Debes ingresar un ID", "warning")
+            return redirect(url_for('home_admin'))
+
+        try:
+            id_int = int(id)
+        except ValueError:
+            flash("ID inválido", "warning")
+            return redirect(url_for('home_admin'))
+
+        producto = obtener_producto(id_int)
+        if not producto:
+            flash("No se encontró ningún producto con ese ID", "warning")
+            return redirect(url_for('home_admin'))
+
+        return redirect(url_for('modificar', id_producto=id_int))
+
+    return render_template('gestion.html')
+
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

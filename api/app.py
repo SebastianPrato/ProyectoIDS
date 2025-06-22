@@ -2,12 +2,13 @@ import mysql.connector
 import requests
 from flask import Flask, request, jsonify, abort, session, redirect
 from flask_login import LoginManager
+from flask_cors import CORS
 FRONT_BASE = "http://127.0.0.1:5001"
 app = Flask(__name__)
 app.secret_key = 'clave-super-secreta' 
 app.config['SESSION_COOKIE_DOMAIN'] = '127.0.0.1'  # Configura para localhost
 app.config['SESSION_COOKIE_SECURE'] = False        # Solo si no estás usando HTTPS
-
+CORS(app)
 def get_db():
     return mysql.connector.connect(
         host="localhost", user="admin", password="password", database="ludoteca",
@@ -175,30 +176,49 @@ def ver_pedido(id):
 # este endpoint esta diseñado para que cuando se reciba la id desde el front,
 # modifique los datos del producto, sin tocar la id, si la id no viene en la request
 # entonces es un producto nuevo 
-@app.route('/usuario/admin/modificar_producto', methods=['POST'])
-def modificar_producto():
+
+
+@app.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
+def modificar_producto(id):
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
     data = request.get_json()
-    id = int(data.get("categoria"))
-    categoria = int(data.get("categoria"))
-    nombre=data.get("nombre")
-    precio = float(data.get("precio"))
-    stock=int(data.get("stock"))
-    descripcion=data.get("descripcion")
-    imagen=data.get("imagen")
-    cursor.execute("SELECT id, nombre, stock,descripcion,image_url FROM productos WHERE id=%s;", (id,))
+    print(data)
+    cursor.execute("SELECT * FROM productos WHERE id=%s;", (id,))
     producto = cursor.fetchone()
     if producto:
         cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
-                       (categoria, nombre, precio, stock, descripcion, imagen, id,))
-    else:
-        cursor.execute("INSERT INTO nombre_de_la_tabla (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);",
-                        (categoria, nombre, descripcion, precio, imagen, stock,))
+                       (int(data["categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
     coneccion.commit()
     cursor.close()
     coneccion.close()
-    return ("Producto modificado/agregado", 201)
+    return jsonify({"message": "Producto modificado exitosamente"}), 201
+
+@app.route('/usuario/admin/cargar', methods=['GET', 'POST'])
+def cargar():
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    data = request.get_json()
+    cursor.execute("INSERT INTO productos (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);", 
+                       (int(data["categoria"]), data["nombre"], data["descripcion"], float(data["precio"]), data["imagen"],int(data["stock"]),))
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message": "Producto agregado exitosamente"}), 201
+
+
+@app.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
+def borrar(id):
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("DELETE FROM productos WHERE id = %s;", (id,))
+    if cursor.rowcount == 0:
+                return jsonify({"message": "Producto no encontrado"}), 404
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message": "Producto eliminado exitosamente"}), 200
+
 
 if __name__ == '__main__':
     app.run(port=5001)
