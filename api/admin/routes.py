@@ -95,6 +95,22 @@ def modificar_producto():
     coneccion.close()
     return ("Producto modificado/agregado", 201)
 
+@admin_bp.route('/usuario/admin/eliminar_producto/<int:producto_id>', methods=['DELETE'])
+def eliminar_producto(producto_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM productos WHERE id=%s", (producto_id,))
+    producto = cursor.fetchone()
+    if producto:
+        cursor.execute("DELETE FROM productos WHERE id=%s", (producto_id,))
+        coneccion.commit()
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message":"Producto eliminado"}), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Producto no encontrado"}), 404
+
 @admin_bp.route('/usuario/admin/crear_categoria', methods=['POST'])
 def crear_categoria():
     coneccion = get_db()

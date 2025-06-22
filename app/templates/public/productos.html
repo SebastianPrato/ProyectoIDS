@@ -25,6 +25,10 @@
                         <div class="product-item bg-light mb-4">
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100" src="{{ juego.imagen }}" alt="">
+                                <button class="btn btn-sm btn-danger" style="position: absolute; top: 5px; right: 5px;"
+                                        onclick="eliminar({{ juego.id }})">
+                                    X
+                                </button>
                             </div>
                             <div class="text-center py-4">
                                 <a class="h6 text-decoration-none text-truncate" href="{{url_for('producto_detalle', producto_id= juego['id'] )}}">{{ juego.nombre }}</a>
@@ -42,4 +46,24 @@
     </div>
 </div>
 <!-- Shop End -->
+
+<script>
+function borrar_juego(id, nombre) {
+    if (confirm('¿Estás seguro de que queres eliminar "' + nombre + '"?')) {
+        fetch('http://localhost:5001/api/admin/usuario/admin/eliminar_producto/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Error');
+            }
+        });
+    }
+}
+</script>
 {% endblock %}
