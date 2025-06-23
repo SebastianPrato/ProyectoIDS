@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block modificar %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center mb-4">{{ 'Modificar Producto' if modificar else 'Cargar Producto' }}</h2>
+                <form method="POST">
+                    {% if modificar %}
+                    <input type="hidden" id="producto-id" value="{{ producto['id'] }}">
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del producto</label>
+                        <input type="text" class="form-control" name="nombre" value="{{ producto['nombre'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="number" class="form-control" name="categoria" min="1" max="8" value="{{ producto['categoria'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" name="descripcion" value="{{ producto['descripcion'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" class="form-control" name="precio" value="{{ producto['precio'] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imagen" class="form-label">Imagen (URL o ruta relativa)</label>
+                        <input type="text" class="form-control" name="imagen" value="{{ producto['imagen'] }}" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" name="stock" value="{{ producto['stock'] }}" required>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            Guardar
+                        </button>
+                        {% if modificar %}
+                            <button type="button" class="btn btn-danger" onclick="eliminarProducto()">
+                                Borrar Producto
+                            </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{url_for('static', filename='js/gestionar.js')}}" ></script>
+{% endblock %}

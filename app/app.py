@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from utils.forms import LoginForm, RegisterForm
+from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
 app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
+CORS(app)
 
 API_BASE = "http://localhost:5001/api"
 
@@ -39,17 +41,30 @@ def obtener_productos_carrito():
         return response.json()
     return {}
 
+def obtener_compras_hechas():
+    response=requests.get(f"{API_BASE}/miscompras")
+    if response.status_code==200:
+        return response.json()
+    
+def gestionar_stock(producto, id):
+    response=requests.post(f"{API_BASE}/usuario/admin/modificar/{id}", json=producto)
+    if response.status_code==201:
+        return True
+    return False
+
+def cargar_producto(producto):
+    response=requests.post(f"{API_BASE}/usuario/admin/cargar", json=producto)
+    if response.status_code==201:
+        return True
+    return False
+
+
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home.html', categorias=[], productos=[], ingresos=[])
+    return render_template('public/home.html', categorias=[], productos=[], ingresos=[])
 
 
-
-
-
-@app.route('/miscompras')
-def miscompras():
-    datoscompra = {
+datoscompra = {
     "producto": "Teto Plush",
     "precio": 71,
     "cantidad": 2,
@@ -58,7 +73,15 @@ def miscompras():
     "entrega": "Por despachar",
     "status": "Enviado / En tránsito"
     }
-    return render_template('miscompras.html', compra=datoscompra)
+
+
+@app.route('/miscompras', methods=['GET'])
+def miscompras():
+    #Si no ha iniciado sesión, mostrar mensaje de que opcion hecha solo para personas que ya iniciaron sesión
+    #Si no tiene compras, mostrar mensaje de "Aun no has realizado ninguna compra!"
+    
+    datoscompra = obtener_compras_hechas()
+    return render_template('public/miscompras.html', compra=datoscompra)
 
 
 
@@ -91,9 +114,9 @@ def categoria_detalle(categoria):
 def carrito():
     return render_template('public/carrito.html', seleccionados=obtener_productos_carrito())
 
-@app.route('/miscompras', methods=['GET'])
+"""@app.route('/miscompras', methods=['GET'])
 def miscompras():
-    return render_template('public/miscompras.html', seleccionados=obtener_productos_carrito())
+    return render_template('public/miscompras.html', seleccionados=obtener_productos_carrito())"""
 
 @app.route('/carrito/checkout')
 def checkout():
@@ -127,11 +150,19 @@ def login():
         password = form.password.data
         usuario={"email":email, "contrasenia":password}
         response = requests.post(f"{API_BASE}/usuarios/login", json=usuario)
+        data = response.json()
         if response.status_code == 200:
-            data = response.json()
             session['id'] = data['id']
             session['nombre'] = data['nombre']
             return redirect(url_for('home'))
+        elif response.status_code == 401:
+            error = data["message"]
+            return render_template('login.html', form=form, error=error)
+        elif response.status_code == 500:
+            error = data["message"]
+            return render_template('login.html', form=form, error=error)
+            
+    
     return render_template('login.html', form=form)
  
 @app.route('/logout')
@@ -144,6 +175,68 @@ def logout():
 @app.route('/pagar')
 def pagar():
     return render_template('public/pago.html')
+
+
+
+@app.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
+def modificar(id_producto):
+    juego=obtener_producto(id_producto)
+    if request.method== "POST":
+        nombre=request.form["nombre"]
+        categoria=request.form["categoria"]
+        descripcion=request.form["descripcion"]
+        precio=request.form["precio"]
+        imagen=request.form["imagen"]
+        stock=request.form["stock"]
+        producto_m={"nombre": nombre, "categoria": categoria, "descripcion": descripcion, "precio": precio, "imagen": imagen, "stock": stock, "crear":False}
+        ok=gestionar_stock(producto_m, id=id_producto)
+        if not ok:
+            flash("Error al guardar producto", "error")
+        else:
+            flash("Producto agregado con éxito", "success")
+        return redirect(url_for("modificar", id_producto=juego['id'])) 
+    return render_template('modificar.html', producto=juego, modificar= True )
+
+@app.route('/admin/cargar', methods=['GET', 'POST']) 
+def cargar():
+    if request.method== "POST":
+        nombre=request.form["nombre"]
+        categoria=request.form["categoria"]
+        descripcion=request.form["descripcion"]
+        precio=request.form["precio"]
+        imagen=request.form["imagen"]
+        stock=request.form["stock"]
+        producto={"nombre": nombre, "categoria": categoria, "descripcion": descripcion, "precio": precio, "imagen": imagen, "stock": stock, "crear":True}
+        ok=cargar_producto(producto)
+        if not ok:
+            flash("Error al guardar producto", "error")
+        else:
+            flash("Producto agregado con éxito", "success")
+        return redirect(url_for("cargar", modificar=False))
+    return render_template('modificar.html', producto={}, modificar= False )
+@app.route('/admin', methods=['GET', 'POST'])
+def home_admin():
+    if request.method == "POST":
+        id = request.form["producto"]
+        if not id:
+            flash("Debes ingresar un ID", "warning")
+            return redirect(url_for('home_admin'))
+
+        try:
+            id_int = int(id)
+        except ValueError:
+            flash("ID inválido", "warning")
+            return redirect(url_for('home_admin'))
+
+        producto = obtener_producto(id_int)
+        if not producto:
+            flash("No se encontró ningún producto con ese ID", "warning")
+            return redirect(url_for('home_admin'))
+
+        return redirect(url_for('modificar', id_producto=id_int))
+
+    return render_template('gestion.html')
+
 
 
 if __name__ == '__main__':
