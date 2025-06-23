@@ -1,13 +1,17 @@
-from flask import Blueprint, Flask, request, jsonify, abort, session, redirect
+from flask import Flask, request, jsonify, abort, session, redirect
 from db import get_connection
 
+from flask_login import LoginManager
 FRONT_BASE = "http://127.0.0.1:5000"
+app = Flask(__name__)
+app.secret_key = 'clave-super-secreta' 
+app.config['SESSION_COOKIE_DOMAIN'] = '127.0.0.1'  # Configura para localhost
+app.config['SESSION_COOKIE_SECURE'] = False        # Solo si no estás usando HTTPS
+
+public_up = Blueprint('public', __name__)
 
 
-
-miscompras_bp=Blueprint('miscompras', __name__)
-
-@miscompras_bp.route('/', methods=['GET'])
+@app.route('/miscompras', methods=['GET'])
 def mostrar_mis_compras():
     if 'user_id' not in session:
         return jsonify({'error': 'No has iniciado sesión'}), 401
@@ -36,3 +40,4 @@ def mostrar_mis_compras():
     cursor.close()
     conexion.close()
     return jsonify(compras)
+    
