@@ -7,6 +7,12 @@ FRONT_BASE = "http://localhost:5000"
 
 public_bp = Blueprint('public', __name__)
 
+def get_db():
+    return mysql.connector.connect(
+        host="localhost", user="mauro", password="1234", database="ludoteca", use_pure=True,
+        autocommit=False  # manejamos transacciones manualmente
+    )
+
 @public_bp.route('/', methods=['GET'])
 def inicio():
     coneccion=get_connection()
@@ -18,6 +24,89 @@ def inicio():
     cursor.close()
     coneccion.close()
     return jsonify({'recientes':recientes, 'destacados':destacados}), 200
+
+@public_bp.route('/productos', methods=['GET'])
+def productos():
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM productos")
+    productos= cursor.fetchall()
+    cursor.close()
+    coneccion.close()
+    return jsonify(productos), 200
+
+@public_bp.route('/productos/<int:producto_id>', methods=['GET'])
+def producto_detalle(producto_id):
+    coneccion = get_db(); cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM productos WHERE id=%s", (producto_id,))
+    prod = cursor.fetchone()
+    cursor.close()
+    coneccion.close()
+    if not prod: 
+        abort(404, 'Producto no encontrado')
+    return jsonify(prod), 200
+
+@public_bp.route('/usuarios/registro', methods=['POST'])
+def registro():
+    data=request.get_json()
+    query_insert = """
+        INSERT INTO usuarios (nombre, apellido, mail, contrasenia)
+        VALUES (%s, %s, %s, %s)
+    """
+    query_check = "SELECT * FROM usuarios WHERE mail = %s"
+
+    try:
+        coneccion = get_db()
+        cursor = coneccion.cursor()
+        cursor.execute(query_check, (data['email'],))
+        if cursor.fetchone(): #Verifica que el correo no esté registrado
+            return jsonify({"message": "El correo ya está registrado"}), 400
+        values = (data['nombre'], data['apellido'], data['email'], data['contrasenia'])
+        cursor.execute(query_insert, values)
+        coneccion.commit()
+        return redirect(f"{FRONT_BASE}/login")
+    except Exception as e:
+        print(f"Error al registrar usuario: {e}")
+        return jsonify({'message': f'Error al registrar usuario: {str(e)}'}), 500
+    finally:
+        if cursor:
+            try:
+                cursor.close()
+            except Exception as e:
+                print(f"Error al cerrar el cursor: {e}")
+        if coneccion:
+            try:
+                coneccion.close()
+            except Exception as e:
+                print(f"Error al cerrar la conexión: {e}")
+
+@public_bp.route('/usuarios/login', methods=['POST'])
+def login():
+    try:
+        user=request.get_json()
+        query = "SELECT * FROM usuarios WHERE mail = %s"
+        connection = get_db()
+        with connection.cursor(dictionary=True) as cursor:
+            cursor.execute(query, (user['email'],))
+            usuario = cursor.fetchone()
+            if usuario and usuario['contrasenia']==user['contrasenia']: ## Verificar si el usuario existe y la contraseña es correcta
+                return jsonify({'auth': True, 'id':usuario['id'], 'nombre':usuario['nombre'], 'administrador': usuario['administrador']}), 200
+            else:
+                return jsonify({'auth': False, "message": "Credenciales incorrectas"}), 401
+    except Exception as e:
+        print(e)
+        return jsonify({'auth': False, 'message': f'Error al iniciar sesión: {str(e)}'}), 500
+    finally:
+        connection.close()
+
+@public_bp.route('/productos/categoria/<int:categoria_id>', methods=['GET'])
+def api_categoria(categoria_id):
+    db = get_db(); cur = db.cursor(dictionary=True)
+    cur.execute("SELECT * FROM productos WHERE categoria=%s", (categoria_id,))
+    productos=cur.fetchall()
+    if not productos:
+        abort(404, 'Producto no encontrado')
+    return jsonify(productos), 200
 
 @public_bp.route('/compra', methods=['POST'])
 def api_compra():

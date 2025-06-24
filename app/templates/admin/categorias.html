@@ -1,0 +1,44 @@
+{% extends "public/base.html" %}
+{% block categorias %}
+
+<div class="container mt-4">
+    <div class="row">
+        {% for categoria in categorias %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <form method="post" id="categoria-{{ categoria.id }}" class="card shadow-sm p-3">
+                
+                <div class="input-group mb-3">
+                    <input type="text" name="{{ categoria.id }}" value="{{ categoria.nombre }}" disabled class="form-control">
+                    <a
+                    class="btn btn-outline-success" 
+                    title="Editar"
+                    href="{{ url_for('editar_categorias', id=categoria.id) }}">
+
+                    🖉
+                </a>
+                    <a
+                    class="btn btn-outline-danger"
+                    title="Eliminar"
+                    href="{{ url_for('eliminar_categorias', id=categoria.id) }}">
+                    🗑️
+                </a>              
+                </div>
+
+
+            </form>
+        </div>
+        {% endfor %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm p-3 d-flex align-items-center justify-content-center" style="height: 100%;">
+                <a href="{{ url_for('crear_categorias') }}" class="btn btn-outline-primary rounded-circle" style="width: 60px; height: 60px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;" title="Agregar nueva categoría">
+                    +
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+{% endblock %}

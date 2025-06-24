@@ -4,6 +4,11 @@ from db import get_connection
 FRONT_BASE = "http://127.0.0.1:5000"
 
 
+def get_db():
+    return mysql.connector.connect(
+        host="localhost", user="mauro", password="1234", database="ludoteca",
+        autocommit=False  # manejamos transacciones manualmente
+    )
 
 miscompras_bp=Blueprint('miscompras', __name__)
 

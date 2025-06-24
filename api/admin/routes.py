@@ -172,10 +172,24 @@ def listar_categorias():
     coneccion.close()
     return jsonify({"categorias": categorias}), 200
 
+@admin_bp.route('/usuario/admin/categoria/<int:categoria_id>', methods=['GET'])
+def get_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.close()
+        coneccion.close()
+        return jsonify(categoria), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404
 
 ##############################################################################################
-
-@public_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
+"""
+@admin_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
 def api_update_stock(producto_id):
     data = request.get_json() or {}
     new_stock = data.get('stock')
@@ -192,7 +206,7 @@ def api_update_stock(producto_id):
 
 
 
-@app.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
+@admin_bp.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
 def modificar_producto(id):
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -208,7 +222,7 @@ def modificar_producto(id):
     coneccion.close()
     return jsonify({"message": "Producto modificado exitosamente"}), 201
 
-@app.route('/usuario/admin/cargar', methods=['GET', 'POST'])
+@admin_bp.route('/usuario/admin/cargar', methods=['GET', 'POST'])
 def cargar():
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -221,7 +235,7 @@ def cargar():
     return jsonify({"message": "Producto agregado exitosamente"}), 201
 
 
-@app.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
+@admin_bp.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
 def borrar(id):
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -232,3 +246,4 @@ def borrar(id):
     cursor.close()
     coneccion.close()
     return jsonify({"message": "Producto eliminado exitosamente"}), 200
+"""

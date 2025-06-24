@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
-from utils.forms import LoginForm, RegisterForm
+from utils.forms import LoginForm, RegisterForm, CategoriasForm
 from flask_cors import CORS
 import requests
 
@@ -7,9 +7,9 @@ app = Flask(__name__)
 app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
 CORS(app)
 
+
 API_BASE = "http://localhost:5001/api"
 
-categorias=["Estrategia", "Azar", "Rol", "Cartas", "Habilidad", "Cooperativos", "Solitario", "Adultos"]
 
 def obtener_productos():
     response = requests.get(f"{API_BASE}/productos")
@@ -41,6 +41,26 @@ def obtener_productos_carrito():
         return response.json()
     return {}
 
+def eliminar_categoria(id):
+    response = requests.get(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
+    if response.status_code == 200:
+        return response.json()
+    return response.json()
+
+def listar_categorias():
+    response = requests.get(f"{API_BASE}/admin/usuario/admin/listar_categorias")
+    if response.status_code == 200:
+        data = response.json()
+        print(data['categorias'])
+        return data['categorias']
+    return {}
+def get_categoria(id):
+    response = requests.get(f"{API_BASE}/admin/usuario/admin/categoria/{id}")
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    return 
+
 def obtener_compras_hechas():
     response=requests.get(f"{API_BASE}/miscompras")
     if response.status_code==200:
@@ -61,7 +81,10 @@ def cargar_producto(producto):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('public/home.html', categorias=[], productos=[], ingresos=[])
+    if session.get('administrador') == 1:
+        return redirect(url_for('home_admin'))
+    categorias = listar_categorias()
+    return render_template('public/home.html', categorias=categorias, productos=[], ingresos=[])
 
 
 datoscompra = {
@@ -90,7 +113,8 @@ def miscompras():
 
 @app.route('/productos', methods=['GET'])
 def productos():
-    return render_template('public/productos.html', juegos=obtener_productos(), categorias=[])
+    categorias = listar_categorias()
+    return render_template('public/productos.html', juegos=obtener_productos(), categorias=categorias)
 
 @app.route('/productos/<int:producto_id>', methods=['GET'])
 def producto_detalle(producto_id):
@@ -108,6 +132,7 @@ def faqs():
 
 @app.route('/productos/categorias/<categoria>', methods=['GET'])
 def categoria_detalle(categoria):
+    categorias = listar_categorias()
     return render_template('public/productos.html', juegos=obtener_categoria(categoria), categorias=categorias)
 
 @app.route('/carrito', methods=['GET'])
@@ -154,6 +179,7 @@ def login():
         if response.status_code == 200:
             session['id'] = data['id']
             session['nombre'] = data['nombre']
+            session['administrador'] = data['administrador']
             return redirect(url_for('home'))
         elif response.status_code == 401:
             error = data["message"]
@@ -171,15 +197,75 @@ def logout():
     return redirect(url_for('home'))
 
 # --------------------------------------------
-
 @app.route('/pagar')
 def pagar():
     return render_template('public/pago.html')
 
+#--------------------ADMIN---------------------
+@app.route('/admin/categorias', methods=['GET'])
+def categorias():
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
+    return render_template('admin/categorias.html', categorias=listar_categorias())
 
+@app.route('/admin/categorias/eliminar/<id>', methods=['GET', 'POST'])
+def eliminar_categorias(id):
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
+    categoria = get_categoria(id)
+    nombre_categoria = categoria[1]
+    categoria_id = categoria[0]
+
+    if request.method == 'POST':
+        response = requests.delete(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
+        if response.status_code == 200:
+            return redirect(url_for('categorias'))
+
+    return render_template('admin/confirmacion.html',
+                           nombre_categoria=nombre_categoria,
+                           categoria_id=categoria_id)
+
+@app.route('/admin/categorias/editar/<id>', methods=['GET', 'POST'])
+def editar_categorias(id):
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
+    form = CategoriasForm()
+    categoria = get_categoria(id)
+    viejo_nombre = categoria[1]
+    categoria_id = categoria[0]
+
+    if form.validate_on_submit(): 
+        nombre = form.name.data
+        json = {'nombre': nombre}
+        response = requests.put(f"{API_BASE}/admin/usuario/admin/editar_categoria/{id}", json=json)
+        if response.status_code == 200:
+            return redirect(url_for('categorias'))
+    if request.method == 'GET':
+        form.name.data = viejo_nombre
+    return render_template('admin/confirmacion.html',
+                           viejo_nombre = viejo_nombre,
+                           categoria_id=categoria_id,
+                           form = form)
+
+@app.route('/admin/categorias/agregar', methods=['GET', 'POST'])
+def crear_categorias():
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
+    form = CategoriasForm()
+    if form.validate_on_submit(): 
+        nombre = form.name.data
+        json = {'nombre': nombre}
+        response = requests.post(f"{API_BASE}/admin/usuario/admin/crear_categoria", json=json)
+        if response.status_code == 201:
+            return redirect(url_for('categorias'))
+    return render_template('admin/confirmacion.html',
+                           creacion = True,
+                           form = form)
 
 @app.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
 def modificar(id_producto):
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
     juego=obtener_producto(id_producto)
     if request.method== "POST":
         nombre=request.form["nombre"]
@@ -195,10 +281,12 @@ def modificar(id_producto):
         else:
             flash("Producto agregado con éxito", "success")
         return redirect(url_for("modificar", id_producto=juego['id'])) 
-    return render_template('modificar.html', producto=juego, modificar= True )
+    return render_template('admin/modificar.html', producto=juego, modificar= True )
 
 @app.route('/admin/cargar', methods=['GET', 'POST']) 
 def cargar():
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
     if request.method== "POST":
         nombre=request.form["nombre"]
         categoria=request.form["categoria"]
@@ -213,9 +301,11 @@ def cargar():
         else:
             flash("Producto agregado con éxito", "success")
         return redirect(url_for("cargar", modificar=False))
-    return render_template('modificar.html', producto={}, modificar= False )
+    return render_template('admin/modificar.html', producto={}, modificar= False )
 @app.route('/admin', methods=['GET', 'POST'])
 def home_admin():
+    if session.get('administrador') != 1:
+        return redirect(url_for('home'))
     if request.method == "POST":
         id = request.form["producto"]
         if not id:
@@ -235,7 +325,7 @@ def home_admin():
 
         return redirect(url_for('modificar', id_producto=id_int))
 
-    return render_template('gestion.html')
+    return render_template('admin/gestion.html')
 
 
 
