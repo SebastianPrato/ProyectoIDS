@@ -1,8 +1,8 @@
-import mysql.connector
-from flask import Flask, request, jsonify, abort, redirect, Blueprint
-import requests
+import mysql
+from db import get_connection
+from flask import request, jsonify, abort, Blueprint
 
-from flask_login import LoginManager
+
 FRONT_BASE = "http://localhost:5000"
 
 public_bp = Blueprint('public', __name__)
@@ -15,9 +15,9 @@ def get_db():
 
 @public_bp.route('/', methods=['GET'])
 def inicio():
-    coneccion=get_db()
+    coneccion=get_connection()
     cursor= coneccion.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM productos ORDER BY  id DESC LIMIT 8")
+    cursor.execute("SELECT * FROM productos ORDER BY id_producto DESC LIMIT 8")
     recientes=cursor.fetchall()
     cursor.execute("SELECT * FROM productos LIMIT 8")
     destacados=cursor.fetchall()
@@ -116,7 +116,7 @@ def api_compra():
     if not cliente_id or not isinstance(items, list) or not items:
         abort(400, 'cliente_id e items son requeridos')
 
-    db = get_db(); cur = db.cursor()
+    db = get_connection(); cur = db.cursor()
     try:
 
         # aca verificamos el  cliente
@@ -145,41 +145,27 @@ def api_compra():
         db.rollback()
         abort(400, str(e))
 
-@public_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
-def api_update_stock(producto_id):
-    data = request.get_json() or {}
-    new_stock = data.get('stock')
-    if new_stock is None:
-        abort(400, 'stock requerido')
-    db = get_db(); cur = db.cursor()
-    try:
-        cur.execute("UPDATE productos SET stock=%s WHERE id=%s", (new_stock, producto_id))
-        db.commit()
-        return jsonify({'msg':'Stock actualizado'}), 200
-    except mysql.connector.Error as e:
-        db.rollback()
-        abort(400, str(e))
 
 @public_bp.route('/compras', methods=['GET'])
 def api_compras():
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("""
-                
+    coneccion = get_connection()
+    cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("""
       SELECT c.id, c.cliente_id, c.fecha, c.entregado,
              GROUP_CONCAT(CONCAT(dc.producto_id,':',dc.cantidad)) AS items
       FROM compras c
       JOIN detalle_compras dc ON c.id=dc.compra_id
       GROUP BY c.id
     """)
-
-    return jsonify(cur.fetchall()), 200
+    resultado = cursor.fetchall()
+    return jsonify(resultado), 200
 
 @public_bp.route('/carrito', methods=['GET'])
 def api_get_carrito():
     cliente_id = request.args.get('cliente_id', type=int)
     if not cliente_id:
         abort(400, 'Falta el cliente_id en query string')
-    db = get_db(); cur = db.cursor(dictionary=True)
+    db = get_connection(); cur = db.cursor(dictionary=True)
     cur.execute("""
       SELECT c.id AS carrito_id,
              c.producto_id,
@@ -205,7 +191,7 @@ def api_post_carrito():
     if qty <= 0: 
         abort(400, 'cantidad debe ser > 0')
     
-    db = get_db(); cur = db.cursor()
+    db = get_connection(); cur = db.cursor()
 
     cur.execute("SELECT 1 FROM clientes WHERE id=%s", (cid,))
     if not cur.fetchone():
