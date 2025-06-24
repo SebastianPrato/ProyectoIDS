@@ -81,6 +81,8 @@ def cargar_producto(producto):
 
 @app.route('/', methods=['GET'])
 def home():
+    if session.get('administrador') == 1:
+        return redirect(url_for('home_admin'))
     categorias = listar_categorias()
     return render_template('public/home.html', categorias=categorias, productos=[], ingresos=[])
 
@@ -195,7 +197,6 @@ def logout():
     return redirect(url_for('home'))
 
 # --------------------------------------------
-
 @app.route('/pagar')
 def pagar():
     return render_template('public/pago.html')
@@ -280,7 +281,7 @@ def modificar(id_producto):
         else:
             flash("Producto agregado con éxito", "success")
         return redirect(url_for("modificar", id_producto=juego['id'])) 
-    return render_template('modificar.html', producto=juego, modificar= True )
+    return render_template('admin/modificar.html', producto=juego, modificar= True )
 
 @app.route('/admin/cargar', methods=['GET', 'POST']) 
 def cargar():
@@ -300,7 +301,7 @@ def cargar():
         else:
             flash("Producto agregado con éxito", "success")
         return redirect(url_for("cargar", modificar=False))
-    return render_template('modificar.html', producto={}, modificar= False )
+    return render_template('admin/modificar.html', producto={}, modificar= False )
 @app.route('/admin', methods=['GET', 'POST'])
 def home_admin():
     if session.get('administrador') != 1:

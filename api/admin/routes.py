@@ -5,7 +5,7 @@ admin_bp = Blueprint('admin', __name__)
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="mauro", password="1234", database="ludoteca", use_pure=True,
+        host="localhost", user="root", password="", database="ludoteca", use_pure=True,
         autocommit=False  # manejamos transacciones manualmente
     )
 
@@ -188,7 +188,7 @@ def get_categoria(categoria_id):
     return jsonify({"message":"Categoria no encontrada"}), 404
 
 ##############################################################################################
-
+"""
 @admin_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
 def api_update_stock(producto_id):
     data = request.get_json() or {}
@@ -246,3 +246,4 @@ def borrar(id):
     cursor.close()
     coneccion.close()
     return jsonify({"message": "Producto eliminado exitosamente"}), 200
+"""
