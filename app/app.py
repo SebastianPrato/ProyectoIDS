@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, session, request
-from utils.forms import LoginForm, RegisterForm
+from utils.forms import LoginForm, RegisterForm, CategoriasForm
 from flask_cors import CORS
 import requests
 
@@ -204,13 +204,11 @@ def categorias():
 
 @app.route('/admin/categorias/eliminar/<id>', methods=['GET', 'POST'])
 def eliminar_categorias(id):
-    print(f"Método recibido: {request.method}")
     categoria = get_categoria(id)
     nombre_categoria = categoria[1]
     categoria_id = categoria[0]
 
     if request.method == 'POST':
-        print("entre")
         response = requests.delete(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
         if response.status_code == 200:
             return redirect(url_for('categorias'))
@@ -219,7 +217,38 @@ def eliminar_categorias(id):
                            nombre_categoria=nombre_categoria,
                            categoria_id=categoria_id)
 
+@app.route('/admin/categorias/editar/<id>', methods=['GET', 'POST'])
+def editar_categorias(id):
+    form = CategoriasForm()
+    categoria = get_categoria(id)
+    viejo_nombre = categoria[1]
+    categoria_id = categoria[0]
 
+    if form.validate_on_submit(): 
+        nombre = form.name.data
+        json = {'nombre': nombre}
+        response = requests.put(f"{API_BASE}/admin/usuario/admin/editar_categoria/{id}", json=json)
+        if response.status_code == 200:
+            return redirect(url_for('categorias'))
+    if request.method == 'GET':
+        form.name.data = viejo_nombre
+    return render_template('admin/confirmacion.html',
+                           viejo_nombre = viejo_nombre,
+                           categoria_id=categoria_id,
+                           form = form)
+
+@app.route('/admin/categorias/agregar', methods=['GET', 'POST'])
+def crear_categorias():
+    form = CategoriasForm()
+    if form.validate_on_submit(): 
+        nombre = form.name.data
+        json = {'nombre': nombre}
+        response = requests.post(f"{API_BASE}/admin/usuario/admin/crear_categoria", json=json)
+        if response.status_code == 201:
+            return redirect(url_for('categorias'))
+    return render_template('admin/confirmacion.html',
+                           creacion = True,
+                           form = form)
 
 @app.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
 def modificar(id_producto):

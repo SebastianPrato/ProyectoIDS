@@ -9,7 +9,13 @@
                 
                 <div class="input-group mb-3">
                     <input type="text" name="{{ categoria.id }}" value="{{ categoria.nombre }}" disabled class="form-control">
-                    <button type="button" class="btn btn-outline-success" title="Editar">🖉</button>
+                    <a
+                    class="btn btn-outline-success" 
+                    title="Editar"
+                    href="{{ url_for('editar_categorias', id=categoria.id) }}">
+
+                    🖉
+                </a>
                     <a
                     class="btn btn-outline-danger"
                     title="Eliminar"
@@ -24,7 +30,7 @@
         {% endfor %}
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card shadow-sm p-3 d-flex align-items-center justify-content-center" style="height: 100%;">
-                <a href="" class="btn btn-outline-primary rounded-circle" style="width: 60px; height: 60px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;" title="Agregar nueva categoría">
+                <a href="{{ url_for('crear_categorias') }}" class="btn btn-outline-primary rounded-circle" style="width: 60px; height: 60px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;" title="Agregar nueva categoría">
                     +
                 </a>
             </div>
