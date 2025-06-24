@@ -9,7 +9,7 @@ public_bp = Blueprint('public', __name__)
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="root", password="", database="ludoteca", use_pure=True,
+        host="localhost", user="mauro", password="1234", database="ludoteca", use_pure=True,
         autocommit=False  # manejamos transacciones manualmente
     )
 
@@ -90,7 +90,7 @@ def login():
             cursor.execute(query, (user['email'],))
             usuario = cursor.fetchone()
             if usuario and usuario['contrasenia']==user['contrasenia']: ## Verificar si el usuario existe y la contraseña es correcta
-                return jsonify({'auth': True, 'id':usuario['id'], 'nombre':usuario['nombre']}), 200
+                return jsonify({'auth': True, 'id':usuario['id'], 'nombre':usuario['nombre'], 'administrador': usuario['administrador']}), 200
             else:
                 return jsonify({'auth': False, "message": "Credenciales incorrectas"}), 401
     except Exception as e:

@@ -12,7 +12,7 @@ public_bp = Blueprint('public', __name__)
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="root", password="", database="ludoteca",
+        host="localhost", user="mauro", password="1234", database="ludoteca",
         autocommit=False  # manejamos transacciones manualmente
     )
 

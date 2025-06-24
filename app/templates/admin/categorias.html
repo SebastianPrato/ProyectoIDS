@@ -1,0 +1,34 @@
+{% extends "public/base.html" %}
+{% block categorias %}
+
+<div class="container mt-4">
+    <div class="row">
+        {% for categoria in categorias %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <form method="post" id="categoria-{{ categoria.id }}" class="card shadow-sm p-3">
+                
+                <div class="input-group mb-3">
+                    <input type="text" name="{{ categoria.id }}" value="{{ categoria.nombre }}" disabled class="form-control">
+                    <button type="button" class="btn btn-outline-success" title="Editar">🖉</button>
+                    <a
+                    class="btn btn-outline-danger"
+                    title="Eliminar"
+                    href="{{ url_for('eliminar_categorias', id=categoria.id) }}">
+                    🗑️
+                </a>              
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{% endblock %}

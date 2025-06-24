@@ -5,7 +5,7 @@ admin_bp = Blueprint('admin', __name__)
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost", user="root", password="", database="ludoteca", use_pure=True,
+        host="localhost", user="mauro", password="1234", database="ludoteca", use_pure=True,
         autocommit=False  # manejamos transacciones manualmente
     )
 
@@ -155,3 +155,18 @@ def listar_categorias():
     cursor.close()
     coneccion.close()
     return jsonify({"categorias": categorias}), 200
+
+@admin_bp.route('/usuario/admin/categoria/<int:categoria_id>', methods=['GET'])
+def get_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.close()
+        coneccion.close()
+        return jsonify(categoria), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404

@@ -1,0 +1,43 @@
+{% extends "public/base.html" %}
+{% block categorias %}
+
+<div class="container my-5">
+    
+    {% if nuevo_nombre and viejo_nombre %}
+    <div class="card border-warning mb-4">
+        <div class="card-body text-center">
+            <h5 class="card-title text-warning">Confirmar edición</h5>
+            <p class="card-text">
+                ¿Deseás cambiar el nombre de la categoría de 
+                <strong>{{ viejo_nombre }}</strong> a 
+                <strong>{{ nuevo_nombre }}</strong>?
+            </p>
+            <form method="post" action="/admin/categorias/editar/{{ categoria_id }}">
+                <input type="hidden" name="_method" value="PUT"> 
+                <button type="submit" class="btn btn-warning">
+                    🖉 Confirmar cambio
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if nombre_categoria %}
+    <div class="card border-danger">
+        <div class="card-body text-center">
+            <h5 class="card-title text-danger">Confirmar eliminación</h5>
+            <p class="card-text">
+                ¿Deseás eliminar la categoría <strong>{{ nombre_categoria }}</strong>?
+            </p>
+            <form method="delete" action="/admin/categorias/eliminar/{{ categoria_id }}">
+                <button type="submit" class="btn btn-danger">
+                    🗑️ Confirmar eliminación
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

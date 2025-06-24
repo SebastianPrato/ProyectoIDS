@@ -39,9 +39,28 @@ def obtener_productos_carrito():
         return response.json()
     return {}
 
+def eliminar_categoria(id):
+    response = requests.get(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
+    if response.status_code == 200:
+        return response.json()
+    return response.json()
+
+def listar_categorias():
+    response = requests.get(f"{API_BASE}/admin/usuario/admin/listar_categorias")
+    if response.status_code == 200:
+        data = response.json()
+        return data['categorias']
+    return {}
+def get_categoria(id):
+    response = requests.get(f"{API_BASE}/admin/usuario/admin/categoria/{id}")
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    return 
+
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home.html', categorias=[], productos=[], ingresos=[])
+    return render_template('public/home.html', categorias=listar_categorias(), productos=[], ingresos=[])
 
 
 
@@ -91,9 +110,9 @@ def categoria_detalle(categoria):
 def carrito():
     return render_template('public/carrito.html', seleccionados=obtener_productos_carrito())
 
-@app.route('/miscompras', methods=['GET'])
-def miscompras():
-    return render_template('public/miscompras.html', seleccionados=obtener_productos_carrito())
+#@app.route('/miscompras', methods=['GET'])
+#def miscompras():
+#    return render_template('public/miscompras.html', seleccionados=obtener_productos_carrito())
 
 @app.route('/carrito/checkout')
 def checkout():
@@ -131,6 +150,7 @@ def login():
             data = response.json()
             session['id'] = data['id']
             session['nombre'] = data['nombre']
+            session['administrador'] = data['administrador']
             return redirect(url_for('home'))
     return render_template('login.html', form=form)
  
@@ -144,6 +164,23 @@ def logout():
 @app.route('/pagar')
 def pagar():
     return render_template('public/pago.html')
+
+#--------------------ADMIN---------------------
+@app.route('/admin/categorias', methods=['GET'])
+def categorias():
+    return render_template('admin/categorias.html', categorias=listar_categorias())
+
+@app.route('/admin/categorias/eliminar/<id>', methods=['GET', 'DELETE'])
+def eliminar_categorias(id):
+    categoria = get_categoria(id)
+    nombre_categoria=categoria[1]
+    categoria_id = categoria[0]
+    print(nombre_categoria)
+    if request.method == 'DELETE':
+        response = requests.delete(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
+        if response.status_code == 200:
+            return redirect(url_for('categorias'))
+    return render_template('admin/confirmacion.html', nombre_categoria=nombre_categoria, categoria_id=categoria_id)
 
 
 if __name__ == '__main__':

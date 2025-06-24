@@ -109,8 +109,17 @@
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a href="{{ url_for('home') }}" class="nav-item nav-link active">Inicio</a>
-                            <a href="{{ url_for('miscompras')}}" class="nav-item nav-link">Mis Compras</a>
+                            {% if session.get('administrador') == 0 or not session.get('administrador') %}
+
+                                <a href="{{ url_for('miscompras')}}" class="nav-item nav-link">Mis Compras</a>
+
+                            {% endif %}
                             <a href="{{ url_for('productos') }}" class="nav-item nav-link">Productos</a>
+                            {% if session.get('administrador') == 1 %}
+
+                                <a href="{{ url_for('categorias') }}" class="nav-item nav-link">Categorias</a>
+
+                            {% endif %}
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Compra <i class="fa fa-angle-down mt-1"></i></a>
                                 <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
@@ -148,6 +157,10 @@
     {% block misproductos %}
     {% endblock %}
     {% block pago %}
+    {% endblock %}
+    {% block categorias %}
+    {% endblock %}
+    {% block confirmacion %}
     {% endblock %}
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-secondary mt-5 pt-5">
@@ -199,4 +212,4 @@
     <!-- Template Javascript -->
 </body>
 <script src="{{ url_for('static', filename= 'js/main.js')}}"></script>
-</html>
+</html>int(re
