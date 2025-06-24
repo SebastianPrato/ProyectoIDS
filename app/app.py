@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
 CORS(app)
 
+
 API_BASE = "http://localhost:5001/api"
 
 categorias=["Estrategia", "Azar", "Rol", "Cartas", "Habilidad", "Cooperativos", "Solitario", "Adultos"]
@@ -60,9 +61,6 @@ def get_categoria(id):
         return data
     return 
 
-@app.route('/', methods=['GET'])
-def home():
-    return render_template('public/home.html', categorias=listar_categorias(), productos=[], ingresos=[])
 def obtener_compras_hechas():
     response=requests.get(f"{API_BASE}/miscompras")
     if response.status_code==200:
@@ -83,7 +81,7 @@ def cargar_producto(producto):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('public/home.html', categorias=[], productos=[], ingresos=[])
+    return render_template('public/home.html', categorias=listar_categorias(), productos=[], ingresos=[])
 
 
 datoscompra = {
@@ -204,17 +202,22 @@ def pagar():
 def categorias():
     return render_template('admin/categorias.html', categorias=listar_categorias())
 
-@app.route('/admin/categorias/eliminar/<id>', methods=['GET', 'DELETE'])
+@app.route('/admin/categorias/eliminar/<id>', methods=['GET', 'POST'])
 def eliminar_categorias(id):
+    print(f"Método recibido: {request.method}")
     categoria = get_categoria(id)
-    nombre_categoria=categoria[1]
+    nombre_categoria = categoria[1]
     categoria_id = categoria[0]
-    print(nombre_categoria)
-    if request.method == 'DELETE':
+
+    if request.method == 'POST':
+        print("entre")
         response = requests.delete(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
         if response.status_code == 200:
             return redirect(url_for('categorias'))
-    return render_template('admin/confirmacion.html', nombre_categoria=nombre_categoria, categoria_id=categoria_id)
+
+    return render_template('admin/confirmacion.html',
+                           nombre_categoria=nombre_categoria,
+                           categoria_id=categoria_id)
 
 
 
@@ -275,7 +278,7 @@ def home_admin():
 
         return redirect(url_for('modificar', id_producto=id_int))
 
-    return render_template('gestion.html')
+    return render_template('admin/gestion.html')
 
 
 

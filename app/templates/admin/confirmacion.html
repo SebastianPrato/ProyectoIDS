@@ -29,11 +29,11 @@
             <p class="card-text">
                 ¿Deseás eliminar la categoría <strong>{{ nombre_categoria }}</strong>?
             </p>
-            <form method="delete" action="/admin/categorias/eliminar/{{ categoria_id }}">
-                <button type="submit" class="btn btn-danger">
-                    🗑️ Confirmar eliminación
-                </button>
+            <form method="post" action="/admin/categorias/eliminar/{{ categoria_id }}">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-danger">🗑️ Confirmar eliminación</button>
             </form>
+            
         </div>
     </div>
     {% endif %}
