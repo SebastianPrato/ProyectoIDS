@@ -19,16 +19,16 @@ app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
 CORS(app)
 
 
-# Blueprints
+# Blueprints public
 app.register_blueprint(public_bp)
 app.register_blueprint(public_productos_bp, url_prefix='/productos')
 app.register_blueprint(public_usuarios_bp, url_prefix='')
 app.register_blueprint(public_compras_bp, url_prefix='')
 
+#Bluprints admin
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(admin_productos_bp, url_prefix='/admin')
 app.register_blueprint(admin_categorias_bp, url_prefix='/admin')
-
 
 
 # Rutas comunes
