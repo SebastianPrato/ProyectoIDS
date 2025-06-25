@@ -84,11 +84,6 @@ def miscompras():
 
     return render_template('public/miscompras.html', compra=datoscompra)
 
-
-
-
-
-
 @app.route('/productos', methods=['GET'])
 def productos():
     return render_template('public/productos.html', juegos=obtener_productos(), categorias=[])
