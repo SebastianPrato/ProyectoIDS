@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, request, jsonify, redirect
+from flask import Blueprint, abort, jsonify
 from db import get_connection
 
 FRONT_BASE = "http://127.0.0.1:5000"

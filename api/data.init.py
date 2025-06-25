@@ -57,6 +57,9 @@ juegos = [
      "descripcion": "Juego de fiesta para 4 o más jugadores. Establece contacto con tus agentes con nombre clave, pero no te equivoques que si eliges a un agente especial infiltrado pierdes!"}
 ]
 
+
+categorias=["Estrategia", "Azar", "Rol", "Cartas", "Habilidad", "Cooperativos", "Solitario", "Adultos"]
+
 # Insertar datos
 
 conexion = get_connection()
@@ -82,3 +85,4 @@ except Exception as e:
     print("Ocurrió un error:", e)
 finally:
     conexion.close()
+

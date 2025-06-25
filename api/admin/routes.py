@@ -1,5 +1,7 @@
 import mysql.connector
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, abort, request, jsonify, session
+
+from db import get_connection
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -95,6 +97,22 @@ def modificar_producto():
     coneccion.close()
     return ("Producto modificado/agregado", 201)
 
+@admin_bp.route('/usuario/admin/eliminar_producto/<int:producto_id>', methods=['DELETE'])
+def eliminar_producto(producto_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM productos WHERE id=%s", (producto_id,))
+    producto = cursor.fetchone()
+    if producto:
+        cursor.execute("DELETE FROM productos WHERE id=%s", (producto_id,))
+        coneccion.commit()
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message":"Producto eliminado"}), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Producto no encontrado"}), 404
+
 @admin_bp.route('/usuario/admin/crear_categoria', methods=['POST'])
 def crear_categoria():
     coneccion = get_db()
@@ -159,7 +177,7 @@ def listar_categorias():
 
 ##############################################################################################
 
-# @public_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
+# @admin_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
 # def api_update_stock(producto_id):
 #     data = request.get_json() or {}
 #     new_stock = data.get('stock')
@@ -176,7 +194,7 @@ def listar_categorias():
 
 
 
-# @app.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
+# @admin_bp.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
 # def modificar_producto(id):
 #     coneccion = get_db()
 #     cursor = coneccion.cursor(dictionary=True)
@@ -192,7 +210,7 @@ def listar_categorias():
 #     coneccion.close()
 #     return jsonify({"message": "Producto modificado exitosamente"}), 201
 
-# @app.route('/usuario/admin/cargar', methods=['GET', 'POST'])
+# @admin_bp.route('/usuario/admin/cargar', methods=['GET', 'POST'])
 # def cargar():
 #     coneccion = get_db()
 #     cursor = coneccion.cursor(dictionary=True)
@@ -205,7 +223,7 @@ def listar_categorias():
 #     return jsonify({"message": "Producto agregado exitosamente"}), 201
 
 
-# @app.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
+# @admin_bp.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
 # def borrar(id):
 #     coneccion = get_db()
 #     cursor = coneccion.cursor(dictionary=True)
