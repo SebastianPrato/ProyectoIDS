@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% block categorias %}
+
+<div class="container my-5">
+
+    {% if creacion and form %}
+<div class="card border-primary mb-4">
+    <div class="card-body">
+        <h5 class="card-title text-primary text-center">Agregar nueva categoría</h5>
+        
+        <form method="post" action="/admin/categorias/agregar" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3 text-center">
+                <label for="nueva_categoria" class="form-label">Nombre de la nueva categoría</label>
+                {{ form.name(class="form-control") }}
+            </div>
+            <div class="pt-2">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <div class="d-flex justify-content-center">
+                    {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+    
+    {% if viejo_nombre and form %}
+    <div class="card border-warning mb-4">
+        <div class="card-body">
+            <h5 class="card-title text-warning text-center">Editar categoría</h5>
+            
+            <form method="post" action="/admin/categorias/editar/{{ categoria_id }}" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="mb-3 text-center">
+                    <p class="mb-2">Nombre actual: <strong>{{ viejo_nombre }}</strong></p>
+                    <label for="nuevo_nombre" class="form-label">Nuevo nombre</label>
+                    {{ form.name(class="form-control") }}
+                </div>
+                <div class="pt-2">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+    
+                <div class="d-flex justify-content-center">
+                        {{ form.submit(class="btn btn-warning") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    {% endif %}
+
+    {% if nombre_categoria %}
+    <div class="card border-danger">
+        <div class="card-body text-center">
+            <h5 class="card-title text-danger">Confirmar eliminación</h5>
+            <p class="card-text">
+                ¿Deseás eliminar la categoría <strong>{{ nombre_categoria }}</strong>?
+            </p>
+            <form method="post" action="/admin/categorias/eliminar/{{ categoria_id }}">
+                <button type="submit" class="btn btn-danger">🗑️ Confirmar eliminación</button>
+            </form>
+            
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

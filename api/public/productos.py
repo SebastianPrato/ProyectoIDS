@@ -3,7 +3,7 @@ from db import get_connection
 
 FRONT_BASE = "http://127.0.0.1:5000"
 
-productos_bp=Blueprint('productos', __name__)
+productos_bp = Blueprint('productos', __name__)
 
 @productos_bp.route('/', methods=['GET'])
 def productos():
@@ -31,7 +31,7 @@ def producto_detalle(producto_id):
 def api_categoria(categoria_id):
     coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM productos WHERE categoria=%s", (categoria_id,))
+    cursor.execute("SELECT * FROM productos WHERE id_categoria = %s", (categoria_id,))
     productos=cursor.fetchall()
     if not productos:
         abort(404, 'Categoria no encontrado')

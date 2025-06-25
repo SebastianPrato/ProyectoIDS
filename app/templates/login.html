@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
     <title>LUDOTECA</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -26,40 +24,54 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css')}}">
 </head>
 
-<body class="vh-100">
-    <div class="bg-primary vh-100 d-flex align-items-center">
-        <div class="border rounded-4 d-flex flex-column align-items-center m-auto w-25 bg-light py-5">
-            <h1 class="w-100 text-center">Ingresar</h1>
-            <div class="w-100 text-center px-3">
-                <form class="d-flex flex-column align-items-center w-100" method="POST" action="" novalidate>
+<body class="bg-primary d-flex align-items-center justify-content-center vh-100">
+
+    <div class="card shadow-lg rounded-4 overflow-hidden" style="max-width: 900px; width: 100%;">
+        <div class="row g-0">
+            <div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-4">
+                <a href="" class="text-decoration-none">
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">LUDO</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">TECA</span>
+                </a>
+            </div>
+
+            <div class="col-md-6 bg-white p-5">
+                <h2 class="text-center mb-4">Ingresar</h2>
+                <form method="POST" action="" novalidate>
                     {{ form.hidden_tag() }}
-                    <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        {{ form.email.label(class="w-100") }}
-                        {{ form.email(class="form-control w-100") }}
+
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control") }}
                     </div>
-                    <div class="text-center d-flex flex-column align-items-center gap-5 w-100 pt-2">
-                        {{ form.password.label(class="w-100") }}
-                        {{ form.password(class="form-control w-100") }}
+
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control") }}
                     </div>
-                    <div class="pt-2">
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                    <div class="pt-2">
+
+                    {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                    {% endfor %}
+
+                    <div class="d-grid mt-3">
                         {{ form.submit(class="btn btn-primary") }}
                     </div>
-                  
                 </form>
-            </div>
-            <div class="pt-2">
-                <span>No tenés cuenta? <a href="{{ url_for('registro') }}">Registrate</a></span>
+
+                <div class="mt-4 text-center">
+                    <span>No tenés cuenta? <a href="{{ url_for('public_usuarios.registro') }}">Registrate</a></span>
+                </div>
             </div>
         </div>
     </div>
+
     {% if error %}
-        <script>alert("{{error}}") </script>
+    <script>alert("{{ error }}")</script>
     {% endif %}
+
 </body>
+
+</html>

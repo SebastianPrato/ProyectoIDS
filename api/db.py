@@ -1,13 +1,15 @@
-#AJUSTA DATOS A DATABASE LOCAL
-
 import mysql.connector
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_connection():
     return mysql.connector.connect(
-        host="localhost", 
-        user="root", 
-        password="19062025", 
-        database="ludoteca",
-        autocommit=False,  # manejamos transacciones manualmente
+        host = os.environ.get("DB_HOST"), 
+        user = os.environ.get("DB_USER"), 
+        password = os.environ.get("DB_PASSWORD"), 
+        database = os.environ.get("DB_NAME"),
+        autocommit = False,  # manejamos transacciones manualmente
         use_pure=True
     )

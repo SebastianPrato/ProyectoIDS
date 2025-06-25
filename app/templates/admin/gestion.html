@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% block gestion %}
+
+  <div class="container">
+    <h1>Gestión de productos</h1>
+    <h2>¡Bienvenido!</h2>
+    <form method="POST">
+        <label for="juego">Id del producto:</label>
+        <input type="text" id="producto" name="producto" required>
+        <button type="submit">Buscar producto</button>
+    </form>
+  </div>
+
+{% endblock %}
+
