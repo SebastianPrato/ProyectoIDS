@@ -1,34 +1,41 @@
 CREATE TABLE IF NOT EXISTS productos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_producto INT AUTO_INCREMENT PRIMARY KEY,
   categoria INT NOT NULL,
   nombre VARCHAR(100) NOT NULL,
   descripcion VARCHAR(250) NOT NULL,
   imagen VARCHAR(250) NOT NULL,
-  stock INT NOT NULL
+  stock INT NOT NULL,
+  precio DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY(categoria) REFERENCES categoria(id)
 );
 
 CREATE TABLE IF NOT EXISTS usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL,
   apellido VARCHAR(50) NOT NULL,
   mail VARCHAR(100) UNIQUE NOT NULL,
   contrasenia VARCHAR(255) NOT NULL,
-  administrador BOOLEAN DEFAULT FALSE,
+  administrador BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE IF NOT EXISTS compras (
+CREATE TABLE IF NOT EXISTS categoria (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL
+)
+
+CREATE TABLE IF NOT EXISTS compras (
+  id_compra INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL,
   fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
   entregado BOOLEAN DEFAULT FALSE,
-  FOREIGN KEY(cliente_id) REFERENCES clientes(id)
+  pagado BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY(cliente_id) REFERENCES usuarios(id_usuario)
 );
 
 CREATE TABLE IF NOT EXISTS detalle_compras (
-  id INT AUTO_INCREMENT PRIMARY KEY,
   compra_id INT NOT NULL,
   producto_id INT NOT NULL,
   cantidad INT NOT NULL,
-  FOREIGN KEY(compra_id) REFERENCES compras(id),
-  FOREIGN KEY(producto_id) REFERENCES productos(id)
+  FOREIGN KEY(compra_id) REFERENCES compras(id_compra),
+  FOREIGN KEY(producto_id) REFERENCES productos(id_producto)
 );

@@ -1,0 +1,62 @@
+{% extends "public/base.html" %}
+
+{% block misproductos %}
+<div id="miscompras-body">
+    <div id="miscompras-titulo-wrapper">
+        <h2 id="miscompras-titulo">Mis compras</h2>
+    </div>
+    <div id="compras-content">
+
+        {% for compra in compras %}
+
+        <div id="compra-content">
+            <div id="compra-id-wrapper">
+                <h4 id="compra-id-texto">#{{compra["id"]}}</h4>
+            </div>
+
+            {% for producto in compra %}
+
+            <div id="miscompras-barradecompra">
+                <div id="compra-datos">
+                    <div class="compra-datos-section" id="compra-fotoproducto-wrapper">
+                        <div id="compra-fotoproducto-container">
+                            <img id="fotoproducto" src="../static/img/teto.jpg" alt="Teto">
+                        </div>
+                    </div>
+                    <div class="compra-datos-section" id="compra-detallesproducto">
+                        <div class="detalleproducto" id="nombreproductoproducto">
+                            <h5>Producto: {{compra["producto"]}}</h5>
+                        </div>
+                        <div class="detalleproducto" id="precioproducto">
+                            <h5>Precio por unidad: ${{compra["precio"]}}</h5>
+                        </div>
+                        <div class="detalleproducto" id="cantidadunidades">
+                            <h5>Cantidad de unidades: {{compra["cantidad"]}}</h5>
+                        </div>
+                    </div>
+                    <div class="compra-datos-section" id="compra-detallescompra">
+                        <div class="detallecompra" id="totalcompra">
+                            <h5>Total de la compra: ${{compra["total"]}}</h5>
+                        </div>
+                        <div class="boton-ver-wrapper" id="boton-verproducto-wrapper">
+                            <div id="boton-verproducto-container">
+                                <h4><a href="#" class="opcionesvermas">Ver producto</a></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+            <div class="detallecompra" id="fechaentrega">
+                <h5>{{compra["entrega"]}}</h5>
+            </div>
+        </div>
+
+        {% endfor %}
+
+
+    </div>
+</div>
+
+{% endblock %}

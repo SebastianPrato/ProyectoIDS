@@ -1,61 +1,82 @@
 #miscompras-body {
-    height: 100vh;
-    width: 100vw;
+    height: auto;
+    width: auto;
+    overflow: hidden;
+}
+
+:root{
+    --grisesito: rgba(187, 191, 192, 0.874);
+    --grisesitoclaro: rgb(216, 216, 216);
 }
 
 #miscompras-titulo-wrapper {
     display: flex;
     align-items: center;
     height: 10vh;
-    width: 100vw;
-    background-color: rgb(209, 213, 214);
+    width: auto;
+    background-color: var(--grisesito);
     margin-bottom: 1px;
 }
 
 #miscompras-titulo {
+    font-size: 2.5rem;
     margin-top: 1.4vh;
     margin-left: 4.5vw;
 }
 
-#miscompras-content {
+#compras-content {
     display: flex;
-    justify-content: center;
-    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    height: fit-content;
     width: 100%;
 }
 
+#compra-content {
+    margin: 4rem;
+    width: 85%;
+    height: fit-content;
+    background-color: rgb(254, 254, 176);
+    display:block;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: solid black 1px;
+}
+
+#compra-id-wrapper {
+    background-color: var(--grisesitoclaro);
+    width: 100%;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    border-bottom: solid black 0.5px;
+}
+
+#compra-id-texto{
+    font-size: 2rem;
+    margin: 2px 1rem;
+}
+
 #miscompras-barradecompra {
-    margin-top: 3%;
+    margin: 2rem auto 2rem auto;
     background-color: rgb(235, 241, 240);
-    height: 35%;
-    width: 80%;
+    height: 14rem;
+    width: 85%;
     border: solid black 1.5px;
     overflow: hidden;
     border-radius: 0.5em;
 }
 
-#compra-fechadecompra-wrapper {
-    width: 100%;
-    height: 20%;
-    display: flex;
-    align-items: baseline;
-    border-bottom: solid black 0.5px;
-
-}
-
-#compra-fechadecompra {
-    margin: 0.4rem;
-    margin-left: 1.2rem;
-}
-
 #compra-datos {
     display: flex;
     width: 100%;
-    height: 80%;
+    height: fit-content;
 }
 
 #compra-fotoproducto-wrapper {
-    margin-left: 3%;
+    margin: 1rem;
     background-color: white;
     height: 100%;
     width: 20%;
@@ -78,34 +99,17 @@
 }
 
 #compra-detallesproducto {
-
     margin-left: 2%;
     height: 100%;
-    width: 30%;
+    width: 40%;
 }
 
 .detalleproducto {
-    margin-top: 1.5em;
-    margin-bottom: 1em;
-}
-
-#compra-detallescompra {
-
-    height: 100%;
-    width: 20%;
+    margin: 2rem 0rem 2rem 1rem;
 }
 
 .detallecompra {
-    margin-top: 1.5em;
-    margin-bottom: 1em;
-}
-
-#opciones {
-    margin-top: 1em;
-    margin-left: 2%;
-    height: 80%;
-    width: 22%;
-    display:flexbox;
+    margin: 2rem 1rem 0rem 1rem;
 }
 
 .boton-ver-wrapper {
@@ -116,15 +120,32 @@
     align-items: center;
 }
 
-#boton-verproducto-container, #boton-vercompra-container{
-    border: solid black 1.5px;
-    border-radius: 1em;
-    padding: 0.5em;
-    padding-bottom: 0.1em;
+#boton-verproducto-container{
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .opcionesvermas{
+    color: black;
+    margin-top: 0.8em;
+    padding: 0.4em;
+    border: solid black 2px;
+    border-radius: 0.75em;
+    -webkit-transition: all 200ms ease;
+    -o-transition: all 200ms ease;
+    transition: all 200ms ease;
+}
+
+.opcionesvermas:hover{
+    font-size: 1.7rem;
+    color: black;
+    background-color: var(--primary);
+    -webkit-transition: all 200ms ease;
+    -o-transition: all 200ms ease;
+    transition: all 200ms ease;
+}
+
+h5{
+    text-align: justify;
 }
