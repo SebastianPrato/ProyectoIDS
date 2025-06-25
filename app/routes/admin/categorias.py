@@ -25,13 +25,13 @@ def get_categoria(id):
 
 
 # Rutas
-@admin_categorias_bp.route('/admin/categorias', methods=['GET'])
+@admin_categorias_bp.route('/categorias', methods=['GET'])
 def categorias():
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
     return render_template('admin/categorias.html', categorias=listar_categorias())
 
-@admin_categorias_bp.route('/admin/categorias/eliminar/<id>', methods=['GET', 'POST'])
+@admin_categorias_bp.route('/categorias/eliminar/<int:id>', methods=['GET', 'POST'])
 def eliminar_categorias(id):
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
@@ -48,7 +48,7 @@ def eliminar_categorias(id):
                            nombre_categoria=nombre_categoria,
                            categoria_id=categoria_id)
 
-@admin_categorias_bp.route('/admin/categorias/editar/<id>', methods=['GET', 'POST'])
+@admin_categorias_bp.route('/categorias/editar/<int:id>', methods=['GET', 'POST'])
 def editar_categorias(id):
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
@@ -70,7 +70,7 @@ def editar_categorias(id):
                            categoria_id=categoria_id,
                            form = form)
 
-@admin_categorias_bp.route('/admin/categorias/agregar', methods=['GET', 'POST'])
+@admin_categorias_bp.route('/categorias/agregar', methods=['GET', 'POST'])
 def crear_categorias():
     if session.get('administrador') != 1:
         return redirect(url_for('home'))

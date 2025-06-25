@@ -27,7 +27,7 @@ def gestionar_stock(producto, id):
     return False
 
 # Rutas
-@admin_productos_bp.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
+@admin_productos_bp.route('/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
 def modificar(id_producto):
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
@@ -48,7 +48,7 @@ def modificar(id_producto):
         return redirect(url_for("modificar", id_producto=juego['id'])) 
     return render_template('admin/modificar.html', producto=juego, modificar= True )
 
-@admin_productos_bp.route('/admin/cargar', methods=['GET', 'POST']) 
+@admin_productos_bp.route('/cargar', methods=['GET', 'POST']) 
 def cargar():
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
