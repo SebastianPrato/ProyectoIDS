@@ -117,7 +117,7 @@ def crear_categoria():
     cursor = coneccion.cursor()
     data = request.get_json()
     nombre = data.get("nombre")
-    cursor.execute("INSERT INTO categoria (nombre) VALUES (%s);",
+    cursor.execute("INSERT INTO categorias (nombre) VALUES (%s);",
                   (nombre,))
     coneccion.commit()
     cursor.close()
@@ -166,7 +166,7 @@ def eliminar_categoria(categoria_id):
 def listar_categorias():
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM categoria")
+    cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
     cursor.close()
     coneccion.close()

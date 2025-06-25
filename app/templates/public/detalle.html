@@ -1,28 +1,23 @@
 {% extends "public/base.html" %}
 {% block detalle %}
-    <!-- Shop Detail Start -->
-    <div class="container-fluid pb-5">
-        <div class="row px-xl-5">
-            <div class="col-lg-5 mb-30">
-                <div id="product-carousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner bg-light">
-                        <div class="carousel-item active">
-                            <img id="imagen-juego" src="{{producto['imagen']}}" alt="Image">
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Shop Detail Start -->
+<div class="container-fluid pb-5">
+    <div class="row px-xl-5">
+        <div class="col-lg-5">
+            <img class="w-100" id="imagen-juego" src="{{ url_for('static', filename= 'img/' + producto['imagen'])}}" alt="Image">
+        </div>
 
-            <div class="col-lg-7 h-auto mb-30">
-                <div class="h-100 bg-light p-30">
-                    <h3 id="nombre-juego">{{ producto['nombre'] }}</h3>
-                    <h3 id="precio-juego">${{ producto['precio'] }}</h3>
-                    <p id="descripcion-juego">{{producto['descripcion']}}</p>
-                    <div class="d-flex align-items-center mb-4 pt-2">
-                        <button id="boton-agregar-carrito"><i class="fa fa-shopping-cart"></i> Añadir al carrito</button>
-                    </div>
+        <div class="col-lg-7 h-auto">
+            <div class="h-100 bg-light p-30">
+                <h3 id="nombre-juego">{{ producto['nombre'] }}</h3>
+                <h3 id="precio-juego">${{ producto['precio'] }}</h3>
+                <p id="descripcion-juego">{{producto['descripcion']}}</p>
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <button id="boton-agregar-carrito"><i class="fa fa-shopping-cart"></i> Añadir al carrito</button>
                 </div>
             </div>
         </div>
-    <!-- Shop Detail End -->
+    </div>
+</div>
+<!-- Shop Detail End -->
 {% endblock %}
