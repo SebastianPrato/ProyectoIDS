@@ -7,7 +7,7 @@ from public.categorias import categorias_bp
 from public.usuarios import usuarios_bp
 from public.compras import compras_bp
 
-from admin.routes import admin_bp
+from admin.admin import admin_bp
 
 app = Flask(__name__)
 app.secret_key = 'clave-super-secreta'

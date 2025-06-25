@@ -1,17 +1,11 @@
 import mysql.connector
 from flask import Blueprint, abort, request, jsonify, session
 
-from db import get_connection
+from db import get_db
 
 admin_bp = Blueprint('admin', __name__)
 
-def get_db():
-    return mysql.connector.connect(
-        host="localhost", user="root", password="", database="ludoteca", use_pure=True,
-        autocommit=False  # manejamos transacciones manualmente
-    )
-
-@admin_bp.route('/usuario/admin/pedidos', methods=['GET'])
+@admin_bp.route('/pedidos', methods=['GET'])
 def ver_pedidos():
     if 'usuario' not in session: #ESTA ES LA MANERA DE PREGUNTAR SI SE INICIÓ SESIÓN
         print("Usuario no autenticado.")
@@ -39,10 +33,7 @@ def ver_pedidos():
         return jsonify({'message': f'Error al obtener pedidos: {str(e)}'}), 500
     finally:
         coneccion.close()
-
-
-#este endpoint es para ver un pedido es especifico
-@admin_bp.route('/usuario/admin/pedidos/<int:id>', methods=['GET'])
+@admin_bp.route('/pedidos/<int:id>', methods=['GET'])
 def ver_pedido(id):
     if 'usuario' not in session: #Se comprueba que esté la sesion iniciada
         print("Usuario no autenticado.")
@@ -68,52 +59,7 @@ def ver_pedido(id):
     finally:
         coneccion.close()
 
-
-# este endpoint esta diseñado para que cuando se reciba la id desde el front,
-# modifique los datos del producto, sin tocar la id, si la id no viene en la request
-# entonces es un producto nuevo 
-@admin_bp.route('/usuario/admin/modificar_producto', methods=['POST'])
-def modificar_producto():
-    coneccion = get_db()
-    cursor = coneccion.cursor(dictionary=True)
-    data = request.get_json()
-    id = int(data.get("categoria"))
-    categoria = int(data.get("categoria"))
-    nombre=data.get("nombre")
-    precio = float(data.get("precio"))
-    stock=int(data.get("stock"))
-    descripcion=data.get("descripcion")
-    imagen=data.get("imagen")
-    cursor.execute("SELECT id, nombre, stock,descripcion,image_url FROM productos WHERE id=%s;", (id,))
-    producto = cursor.fetchone()
-    if producto:
-        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
-                       (categoria, nombre, precio, stock, descripcion, imagen, id,))
-    else:
-        cursor.execute("INSERT INTO nombre_de_la_tabla (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);",
-                        (categoria, nombre, descripcion, precio, imagen, stock,))
-    coneccion.commit()
-    cursor.close()
-    coneccion.close()
-    return ("Producto modificado/agregado", 201)
-
-@admin_bp.route('/usuario/admin/eliminar_producto/<int:producto_id>', methods=['DELETE'])
-def eliminar_producto(producto_id):
-    coneccion = get_db()
-    cursor = coneccion.cursor()
-    cursor.execute("SELECT id, nombre FROM productos WHERE id=%s", (producto_id,))
-    producto = cursor.fetchone()
-    if producto:
-        cursor.execute("DELETE FROM productos WHERE id=%s", (producto_id,))
-        coneccion.commit()
-        cursor.close()
-        coneccion.close()
-        return jsonify({"message":"Producto eliminado"}), 200
-    cursor.close()
-    coneccion.close()
-    return jsonify({"message":"Producto no encontrado"}), 404
-
-@admin_bp.route('/usuario/admin/crear_categoria', methods=['POST'])
+@admin_bp.route('/crear_categoria', methods=['POST'])
 def crear_categoria():
     coneccion = get_db()
     cursor = coneccion.cursor()
@@ -126,7 +72,7 @@ def crear_categoria():
     coneccion.close()
     return jsonify({"message":"Categoria agregada"}), 201
 
-@admin_bp.route('/usuario/admin/editar_categoria/<int:categoria_id>', methods=['PUT'])
+@admin_bp.route('/editar_categoria/<int:categoria_id>', methods=['PUT'])
 def editar_categoria(categoria_id):
     coneccion = get_db()
     cursor = coneccion.cursor()
@@ -146,7 +92,7 @@ def editar_categoria(categoria_id):
     coneccion.close()
     return jsonify({"message":"Categoria no encontrada"}), 404
 
-@admin_bp.route('/usuario/admin/eliminar_categoria/<int:categoria_id>', methods=['DELETE'])
+@admin_bp.route('/eliminar_categoria/<int:categoria_id>', methods=['DELETE'])
 def eliminar_categoria(categoria_id):
     coneccion = get_db()
     cursor = coneccion.cursor()
@@ -164,7 +110,7 @@ def eliminar_categoria(categoria_id):
     coneccion.close()
     return jsonify({"message":"Categoria no encontrada"}), 404
 
-@admin_bp.route('usuario/admin/listar_categorias', methods=['GET'])
+@admin_bp.route('/categorias', methods=['GET'])
 def listar_categorias():
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -174,7 +120,7 @@ def listar_categorias():
     coneccion.close()
     return jsonify({"categorias": categorias}), 200
 
-@admin_bp.route('/usuario/admin/categoria/<int:categoria_id>', methods=['GET'])
+@admin_bp.route('/categorias/<int:categoria_id>', methods=['GET'])
 def get_categoria(categoria_id):
     coneccion = get_db()
     cursor = coneccion.cursor()
@@ -189,26 +135,7 @@ def get_categoria(categoria_id):
     coneccion.close()
     return jsonify({"message":"Categoria no encontrada"}), 404
 
-##############################################################################################
-"""
-@admin_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
-def api_update_stock(producto_id):
-    data = request.get_json() or {}
-    new_stock = data.get('stock')
-    if new_stock is None:
-        abort(400, 'stock requerido')
-    db = get_connection(); cur = db.cursor()
-    try:
-        cur.execute("UPDATE productos SET stock=%s WHERE id=%s", (new_stock, producto_id))
-        db.commit()
-        return jsonify({'msg':'Stock actualizado'}), 200
-    except mysql.connector.Error as e:
-        db.rollback()
-        abort(400, str(e))
-
-
-
-@admin_bp.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
+@admin_bp.route('/modificar/<int:id>', methods=['GET', 'POST'])
 def modificar_producto(id):
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -224,7 +151,7 @@ def modificar_producto(id):
     coneccion.close()
     return jsonify({"message": "Producto modificado exitosamente"}), 201
 
-@admin_bp.route('/usuario/admin/cargar', methods=['GET', 'POST'])
+@admin_bp.route('/cargar', methods=['GET', 'POST'])
 def cargar():
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -237,7 +164,7 @@ def cargar():
     return jsonify({"message": "Producto agregado exitosamente"}), 201
 
 
-@admin_bp.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
+@admin_bp.route('/borrar/<int:id>', methods=['DELETE'])
 def borrar(id):
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
@@ -248,4 +175,3 @@ def borrar(id):
     cursor.close()
     coneccion.close()
     return jsonify({"message": "Producto eliminado exitosamente"}), 200
-"""
