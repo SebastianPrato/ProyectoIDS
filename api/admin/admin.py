@@ -1,7 +1,7 @@
 import mysql.connector
 from flask import Blueprint, abort, request, jsonify, session
 
-from db import get_db
+from db import get_connection
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -12,7 +12,7 @@ def ver_pedidos():
         return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
     query = "SELECT * FROM compras;"
     try:
-        coneccion = get_db()
+        coneccion = get_connection()
         with coneccion.cursor() as cursor:
             cursor.execute(query)
             resultado = cursor.fetchall()
@@ -40,7 +40,7 @@ def ver_pedido(id):
         return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
     query = "SELECT * FROM detalle_compras WHERE compra_id=%s;"
     try:
-        coneccion = get_db()
+        coneccion = get_connection()
         with coneccion.cursor() as cursor:
             cursor.execute(query, (id,))
             resultado = cursor.fetchall()
@@ -61,7 +61,7 @@ def ver_pedido(id):
 
 @admin_bp.route('/crear_categoria', methods=['POST'])
 def crear_categoria():
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor()
     data = request.get_json()
     nombre = data.get("nombre")
@@ -74,7 +74,7 @@ def crear_categoria():
 
 @admin_bp.route('/editar_categoria/<int:categoria_id>', methods=['PUT'])
 def editar_categoria(categoria_id):
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor()
     data = request.get_json()
     nuevo_nombre = data.get("nombre")
@@ -94,7 +94,7 @@ def editar_categoria(categoria_id):
 
 @admin_bp.route('/eliminar_categoria/<int:categoria_id>', methods=['DELETE'])
 def eliminar_categoria(categoria_id):
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor()
     cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
                   (categoria_id,))
@@ -112,7 +112,7 @@ def eliminar_categoria(categoria_id):
 
 @admin_bp.route('/categorias', methods=['GET'])
 def listar_categorias():
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
     cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
@@ -122,7 +122,7 @@ def listar_categorias():
 
 @admin_bp.route('/categorias/<int:categoria_id>', methods=['GET'])
 def get_categoria(categoria_id):
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor()
     cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
                   (categoria_id,))
@@ -137,7 +137,7 @@ def get_categoria(categoria_id):
 
 @admin_bp.route('/modificar/<int:id>', methods=['GET', 'POST'])
 def modificar_producto(id):
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
     data = request.get_json()
     print(data)
@@ -153,7 +153,7 @@ def modificar_producto(id):
 
 @admin_bp.route('/cargar', methods=['GET', 'POST'])
 def cargar():
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
     data = request.get_json()
     cursor.execute("INSERT INTO productos (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);", 
@@ -166,7 +166,7 @@ def cargar():
 
 @admin_bp.route('/borrar/<int:id>', methods=['DELETE'])
 def borrar(id):
-    coneccion = get_db()
+    coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
     cursor.execute("DELETE FROM productos WHERE id = %s;", (id,))
     if cursor.rowcount == 0:
