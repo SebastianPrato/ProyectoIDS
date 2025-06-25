@@ -58,29 +58,30 @@ def cargar_producto(producto):
         return True
     return False
 
-
 @app.route('/', methods=['GET'])
 def home():
     return render_template('public/home.html', categorias=[], productos=[], ingresos=[])
 
 
-datoscompra = {
-    "producto": "Teto Plush",
-    "precio": 71,
-    "cantidad": 2,
-    "total": 142,
-    "id": "#010408",
-    "entrega": "Por despachar",
-    "status": "Enviado / En tránsito"
-    }
+
 
 
 @app.route('/miscompras', methods=['GET'])
 def miscompras():
     #Si no ha iniciado sesión, mostrar mensaje de que opcion hecha solo para personas que ya iniciaron sesión
     #Si no tiene compras, mostrar mensaje de "Aun no has realizado ninguna compra!"
-    
-    datoscompra = obtener_compras_hechas()
+    #datoscompra = obtener_compras_hechas()
+
+    datoscompra = {
+    "producto": "Teto Plush",
+    "precio": 71,
+    "cantidad": 2,
+    "total": 142,
+    "id": "010408",
+    "entrega": "Tu compra está en camino",
+    "status": "Enviado / En tránsito"
+    }
+
     return render_template('public/miscompras.html', compra=datoscompra)
 
 
@@ -177,7 +178,6 @@ def pagar():
     return render_template('public/pago.html')
 
 
-
 @app.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
 def modificar(id_producto):
     juego=obtener_producto(id_producto)
@@ -214,6 +214,8 @@ def cargar():
             flash("Producto agregado con éxito", "success")
         return redirect(url_for("cargar", modificar=False))
     return render_template('modificar.html', producto={}, modificar= False )
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def home_admin():
     if request.method == "POST":
@@ -236,7 +238,6 @@ def home_admin():
         return redirect(url_for('modificar', id_producto=id_int))
 
     return render_template('gestion.html')
-
 
 
 if __name__ == '__main__':

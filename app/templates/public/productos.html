@@ -5,12 +5,14 @@
     <div class="row px-xl-5">
         <!-- Shop Sidebar Start -->
         <div class="col-lg-3 col-md-4">
-            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filtrar por categorí­a</span></h5>
+            <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filtrar por
+                    categorí­a</span></h5>
             <div class="bg-light p-4 mb-30">
                 <form>
                     {% for categoria in categorias %}
                     <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <a class="custom-control-label" href="{{url_for('categoria_detalle', categoria=3)}}">{{categoria}}</a>
+                        <a class="custom-control-label"
+                            href="{{url_for('categoria_detalle', categoria=3)}}">{{categoria}}</a>
                     </div>
                     {% endfor %}
                 </form>
@@ -26,12 +28,14 @@
                             <div class="product-img position-relative overflow-hidden">
                                 <img class="img-fluid w-100" src="{{ juego.imagen }}" alt="">
                                 <button class="btn btn-sm btn-danger" style="position: absolute; top: 5px; right: 5px;"
-                                        onclick="eliminar({{ juego.id }})">
+                                    onclick="eliminar({{ juego.id }})">
                                     X
                                 </button>
                             </div>
                             <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate" href="{{url_for('producto_detalle', producto_id= juego['id'] )}}">{{ juego.nombre }}</a>
+                                <a class="h6 text-decoration-none text-truncate"
+                                    href="{{url_for('producto_detalle', producto_id= juego['id_producto'] )}}">{{ juego.nombre
+                                    }}</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
                                     <h5>${{ juego.precio }}</h5>
                                 </div>
@@ -48,22 +52,22 @@
 <!-- Shop End -->
 
 <script>
-function borrar_juego(id, nombre) {
-    if (confirm('¿Estás seguro de que queres eliminar "' + nombre + '"?')) {
-        fetch('http://localhost:5001/api/admin/usuario/admin/eliminar_producto/' + id, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            } else {
-                alert('Error');
-            }
-        });
+    function borrar_juego(id, nombre) {
+        if (confirm('¿Estás seguro de que queres eliminar "' + nombre + '"?')) {
+            fetch('http://localhost:5001/api/admin/usuario/admin/eliminar_producto/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Error');
+                    }
+                });
+        }
     }
-}
 </script>
 {% endblock %}
