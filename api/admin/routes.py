@@ -119,7 +119,7 @@ def crear_categoria():
     cursor = coneccion.cursor()
     data = request.get_json()
     nombre = data.get("nombre")
-    cursor.execute("INSERT INTO categoria (nombre) VALUES (%s);",
+    cursor.execute("INSERT INTO categorias (nombre) VALUES (%s);",
                   (nombre,))
     coneccion.commit()
     cursor.close()
@@ -168,69 +168,84 @@ def eliminar_categoria(categoria_id):
 def listar_categorias():
     coneccion = get_db()
     cursor = coneccion.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM categoria")
+    cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
     cursor.close()
     coneccion.close()
     return jsonify({"categorias": categorias}), 200
 
+@admin_bp.route('/usuario/admin/categoria/<int:categoria_id>', methods=['GET'])
+def get_categoria(categoria_id):
+    coneccion = get_db()
+    cursor = coneccion.cursor()
+    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+                  (categoria_id,))
+    categoria = cursor.fetchone()
+    if categoria:
+        cursor.close()
+        coneccion.close()
+        return jsonify(categoria), 200
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message":"Categoria no encontrada"}), 404
 
 ##############################################################################################
-
-# @admin_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
-# def api_update_stock(producto_id):
-#     data = request.get_json() or {}
-#     new_stock = data.get('stock')
-#     if new_stock is None:
-#         abort(400, 'stock requerido')
-#     db = get_connection(); cur = db.cursor()
-#     try:
-#         cur.execute("UPDATE productos SET stock=%s WHERE id=%s", (new_stock, producto_id))
-#         db.commit()
-#         return jsonify({'msg':'Stock actualizado'}), 200
-#     except mysql.connector.Error as e:
-#         db.rollback()
-#         abort(400, str(e))
-
-
-
-# @admin_bp.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
-# def modificar_producto(id):
-#     coneccion = get_db()
-#     cursor = coneccion.cursor(dictionary=True)
-#     data = request.get_json()
-#     print(data)
-#     cursor.execute("SELECT * FROM productos WHERE id=%s;", (id,))
-#     producto = cursor.fetchone()
-#     if producto:
-#         cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
-#                        (int(data["categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
-#     coneccion.commit()
-#     cursor.close()
-#     coneccion.close()
-#     return jsonify({"message": "Producto modificado exitosamente"}), 201
-
-# @admin_bp.route('/usuario/admin/cargar', methods=['GET', 'POST'])
-# def cargar():
-#     coneccion = get_db()
-#     cursor = coneccion.cursor(dictionary=True)
-#     data = request.get_json()
-#     cursor.execute("INSERT INTO productos (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);", 
-#                        (int(data["categoria"]), data["nombre"], data["descripcion"], float(data["precio"]), data["imagen"],int(data["stock"]),))
-#     coneccion.commit()
-#     cursor.close()
-#     coneccion.close()
-#     return jsonify({"message": "Producto agregado exitosamente"}), 201
+"""
+@admin_bp.route('/productos/<int:producto_id>', methods=['PATCH'])
+def api_update_stock(producto_id):
+    data = request.get_json() or {}
+    new_stock = data.get('stock')
+    if new_stock is None:
+        abort(400, 'stock requerido')
+    db = get_connection(); cur = db.cursor()
+    try:
+        cur.execute("UPDATE productos SET stock=%s WHERE id=%s", (new_stock, producto_id))
+        db.commit()
+        return jsonify({'msg':'Stock actualizado'}), 200
+    except mysql.connector.Error as e:
+        db.rollback()
+        abort(400, str(e))
 
 
-# @admin_bp.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
-# def borrar(id):
-#     coneccion = get_db()
-#     cursor = coneccion.cursor(dictionary=True)
-#     cursor.execute("DELETE FROM productos WHERE id = %s;", (id,))
-#     if cursor.rowcount == 0:
-#                 return jsonify({"message": "Producto no encontrado"}), 404
-#     coneccion.commit()
-#     cursor.close()
-#     coneccion.close()
-#     return jsonify({"message": "Producto eliminado exitosamente"}), 200
+
+@admin_bp.route('/usuario/admin/modificar/<int:id>', methods=['GET', 'POST'])
+def modificar_producto(id):
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    data = request.get_json()
+    print(data)
+    cursor.execute("SELECT * FROM productos WHERE id=%s;", (id,))
+    producto = cursor.fetchone()
+    if producto:
+        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
+                       (int(data["categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message": "Producto modificado exitosamente"}), 201
+
+@admin_bp.route('/usuario/admin/cargar', methods=['GET', 'POST'])
+def cargar():
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    data = request.get_json()
+    cursor.execute("INSERT INTO productos (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);", 
+                       (int(data["categoria"]), data["nombre"], data["descripcion"], float(data["precio"]), data["imagen"],int(data["stock"]),))
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message": "Producto agregado exitosamente"}), 201
+
+
+@admin_bp.route('/usuario/admin/borrar/<int:id>', methods=['DELETE'])
+def borrar(id):
+    coneccion = get_db()
+    cursor = coneccion.cursor(dictionary=True)
+    cursor.execute("DELETE FROM productos WHERE id = %s;", (id,))
+    if cursor.rowcount == 0:
+                return jsonify({"message": "Producto no encontrado"}), 404
+    coneccion.commit()
+    cursor.close()
+    coneccion.close()
+    return jsonify({"message": "Producto eliminado exitosamente"}), 200
+"""

@@ -55,7 +55,7 @@ def login():
             cursor.execute(query, (user['email'],))
             usuario = cursor.fetchone()
             if (usuario and (usuario['contrasenia']==user['contrasenia'])): ## Verificar si el usuario existe y la contraseña es correcta
-                return jsonify({'auth': True, 'id':usuario['id_usuario'], 'nombre':usuario['nombre']}), 200
+                return jsonify({'auth': True, 'id':usuario['id_usuario'], 'nombre':usuario['nombre'], 'administrador':usuario['administrador']}), 200
             else:
                 return jsonify({'auth': False, "message": "Credenciales incorrectas"}), 401
     except Exception as e:

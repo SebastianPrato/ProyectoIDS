@@ -6,44 +6,38 @@
         <!-- Shop Sidebar Start -->
         <div class="col-lg-3 col-md-4">
             <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filtrar por
-                    categorí­a</span></h5>
+                    categoría</span></h5>
             <div class="bg-light p-4 mb-30">
-                <form>
-                    {% for categoria in categorias %}
-                    <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                        <a class="custom-control-label"
-                            href="{{url_for('categoria_detalle', categoria=3)}}">{{categoria}}</a>
-                    </div>
-                    {% endfor %}
-                </form>
+                {% for categoria in categorias %}
+                <div class="d-flex align-items-center mb-3">
+                    <input class="mr-3" type="checkbox" id="{{categoria.id_categoria}}" disabled {% if categoria.id_categoria == categoria_activa %}checked{% endif %}>
+                    <a
+                        href="{{url_for('public_productos.productos_categoria', id_categoria = categoria.id_categoria)}}">{{categoria.nombre}}</a>
+                </div>
+                {% endfor %}
             </div>
         </div>
         <!-- Shop Product Start -->
         <div class="col-lg-9 col-md-8">
             <div class="row pb-3">
-                <div class="row">
-                    {% for juego in juegos %}
-                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                        <div class="product-item bg-light mb-4">
-                            <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="{{ juego.imagen }}" alt="">
-                                <button class="btn btn-sm btn-danger" style="position: absolute; top: 5px; right: 5px;"
-                                    onclick="eliminar({{ juego.id }})">
-                                    X
-                                </button>
-                            </div>
-                            <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate"
-                                    href="{{url_for('producto_detalle', producto_id= juego['id_producto'] )}}">{{ juego.nombre
-                                    }}</a>
-                                <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>${{ juego.precio }}</h5>
-                                </div>
+                {% for producto in productos %}
+                <div class="col-lg-4 col-md-6 col-sm-6 pb-1 mb-3">
+                    <div class="product-item bg-light h-100">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100"
+                                src="{{ url_for('static', filename= 'img/' + producto.imagen)}}" alt="">
+                        </div>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate"
+                                href="{{url_for('public_productos.producto_detalle', id_producto = producto.id_producto )}}">{{
+                                producto.nombre }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>${{ producto.precio }}</h5>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
         </div>
         <!-- Shop Product End -->
@@ -51,23 +45,4 @@
 </div>
 <!-- Shop End -->
 
-<script>
-    function borrar_juego(id, nombre) {
-        if (confirm('¿Estás seguro de que queres eliminar "' + nombre + '"?')) {
-            fetch('http://localhost:5001/api/admin/usuario/admin/eliminar_producto/' + id, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('Error');
-                    }
-                });
-        }
-    }
-</script>
 {% endblock %}

@@ -4,11 +4,11 @@ from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 
 class LoginForm(FlaskForm):
-    email = StringField("Ingrese su mail", 
+    email = StringField("Correo electrónico", 
                         validators=[DataRequired(message="El email es obligatorio"), 
                         Email(message="Email inválido")])
     
-    password = PasswordField("Ingrese su contrasena", 
+    password = PasswordField("Contraseña", 
                              validators=[DataRequired(message="La contrasena es obligatoria")])
     submit = SubmitField("Confirmar")
 
@@ -22,3 +22,6 @@ class RegisterForm(FlaskForm):
     confirm = PasswordField("Confirme su contrasena", validators=[DataRequired(message="Debe confirmar su contrasena")])
     submit = SubmitField("Confirmar")
     
+class CategoriasForm(FlaskForm):
+    name = StringField(validators=[DataRequired(message="El nombre es obligatorio"), Length(min=3, max=15, message="El nombre debe tener entre 3 y 15 caracteres")])
+    submit = SubmitField("Confirmar")
