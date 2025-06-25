@@ -36,6 +36,6 @@ def home_admin():
             flash("No se encontró ningún producto con ese ID", "warning")
             return redirect(url_for('home_admin'))
 
-        return redirect(url_for('modificar', id_producto=id_int))
+        return redirect(url_for('admin_productos.modificar', id_producto=id_int))
 
     return render_template('admin/gestion.html')

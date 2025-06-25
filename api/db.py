@@ -6,7 +6,7 @@ def get_connection():
     return mysql.connector.connect(
         host="localhost", 
         user="root", 
-        password="", 
+        password="19062025", 
         database="ludoteca",
         autocommit=False,  # manejamos transacciones manualmente
         use_pure=True
