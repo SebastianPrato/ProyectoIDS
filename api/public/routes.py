@@ -17,8 +17,3 @@ def inicio():
     cursor.close()
     coneccion.close()
     return jsonify({'recientes':recientes, 'destacados':destacados}), 200
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 8cb23cc28efd2f7edf68400c18115d9cdefbafe4
