@@ -66,7 +66,7 @@
             <p class="card-text">
                 ¿Deseás eliminar la categoría <strong>{{ nombre_categoria }}</strong>?
             </p>
-            {% if existen_productos %}
+            {% if not existen_productos %}
             <span>No se puede eliminar una categoria con productos asignados ({{productos_asignados|length}})</span>
             {%else%}
             <form method="post" action="/admin/categorias/eliminar/{{ categoria_id }}">

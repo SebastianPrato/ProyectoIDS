@@ -33,6 +33,7 @@ def ver_pedidos():
         return jsonify({'message': f'Error al obtener pedidos: {str(e)}'}), 500
     finally:
         coneccion.close()
+        
 @admin_bp.route('/pedidos/<int:id>', methods=['GET'])
 def ver_pedido(id):
     if 'usuario' not in session: #Se comprueba que esté la sesion iniciada
@@ -65,7 +66,7 @@ def crear_categoria():
     cursor = coneccion.cursor()
     data = request.get_json()
     nombre = data.get("nombre")
-    cursor.execute("INSERT INTO categoria (nombre) VALUES (%s);",
+    cursor.execute("INSERT INTO categorias (nombre) VALUES (%s);",
                   (nombre,))
     coneccion.commit()
     cursor.close()
@@ -78,11 +79,11 @@ def editar_categoria(categoria_id):
     cursor = coneccion.cursor()
     data = request.get_json()
     nuevo_nombre = data.get("nombre")
-    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+    cursor.execute("SELECT id_categoria, nombre FROM categorias WHERE id_categoria=%s",
                   (categoria_id,))
     categoria = cursor.fetchone()
     if categoria:
-        cursor.execute("UPDATE categoria SET nombre=%s WHERE id=%s",
+        cursor.execute("UPDATE categorias SET nombre=%s WHERE id_categoria=%s",
                        (nuevo_nombre, categoria_id,))
         coneccion.commit()
         cursor.close()
@@ -96,11 +97,11 @@ def editar_categoria(categoria_id):
 def eliminar_categoria(categoria_id):
     coneccion = get_connection()
     cursor = coneccion.cursor()
-    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+    cursor.execute("SELECT id_categoria, nombre FROM categorias WHERE id_categoria=%s",
                   (categoria_id,))
     categoria = cursor.fetchone()
     if categoria:
-        cursor.execute("DELETE FROM categoria WHERE id=%s",
+        cursor.execute("DELETE FROM categorias WHERE id_categoria=%s",
                        (categoria_id,))
         coneccion.commit()
         cursor.close()
@@ -114,7 +115,7 @@ def eliminar_categoria(categoria_id):
 def listar_categorias():
     coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM categoria")
+    cursor.execute("SELECT * FROM categorias")
     categorias = cursor.fetchall()
     cursor.close()
     coneccion.close()
@@ -124,7 +125,8 @@ def listar_categorias():
 def get_categoria(categoria_id):
     coneccion = get_connection()
     cursor = coneccion.cursor()
-    cursor.execute("SELECT id, nombre FROM categoria WHERE id=%s",
+    cursor.execute("SELECT id_categoria, nombre "
+                    "FROM categorias WHERE id_categoria=%s",
                   (categoria_id,))
     categoria = cursor.fetchone()
     if categoria:

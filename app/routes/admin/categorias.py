@@ -38,17 +38,17 @@ def eliminar_categorias(id):
         return redirect(url_for('home'))
     categoria = get_categoria(id)
     print(categoria)
-    nombre_categoria = categoria
-    categoria_id = categoria
+    nombre_categoria = categoria[1]
+    categoria_id = categoria[0]
     productos_asignados = obtener_productos_categoria(id)
     existen_productos = False
     if len(productos_asignados) == 0:
         existen_productos = True
 
-    if request.method == 'POST' and not existen_productos:
-        response = requests.delete(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
+    if request.method == 'POST' and existen_productos:
+        response = requests.delete(f"{API_BASE}/admin/eliminar_categoria/{id}")
         if response.status_code == 200:
-            return redirect(url_for('categorias'))
+            return redirect(url_for('admin_categorias.categorias'))
 
     return render_template('admin/confirmacion.html',
                            nombre_categoria=nombre_categoria,
@@ -68,9 +68,9 @@ def editar_categorias(id):
     if form.validate_on_submit(): 
         nombre = form.name.data
         json = {'nombre': nombre}
-        response = requests.put(f"{API_BASE}/admin/usuario/admin/editar_categoria/{id}", json=json)
+        response = requests.put(f"{API_BASE}/admin/editar_categoria/{id}", json=json)
         if response.status_code == 200:
-            return redirect(url_for('categorias'))
+            return redirect(url_for('admin_categorias.categorias'))
     if request.method == 'GET':
         form.name.data = viejo_nombre
     return render_template('admin/confirmacion.html',
@@ -86,9 +86,9 @@ def crear_categorias():
     if form.validate_on_submit(): 
         nombre = form.name.data
         json = {'nombre': nombre}
-        response = requests.post(f"{API_BASE}/admin/usuario/admin/crear_categoria", json=json)
+        response = requests.post(f"{API_BASE}/admin/crear_categoria", json=json, cookies=request.cookies)
         if response.status_code == 201:
-            return redirect(url_for('categorias'))
+            return redirect(url_for('admin_categorias.categorias'))
     return render_template('admin/confirmacion.html',
                            creacion = True,
                            form = form)
