@@ -2,7 +2,7 @@ import mysql
 from db import get_connection
 from flask import request, jsonify, abort, Blueprint
 
-FRONT_BASE = "http://localhost:5000"
+FRONT_BASE = "http://127.0.0.1:5000"
 
 public_bp = Blueprint('public', __name__)
 

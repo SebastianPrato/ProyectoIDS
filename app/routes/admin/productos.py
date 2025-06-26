@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, session, request, B
 from utils.forms import CategoriasForm
 import requests
 
-API_BASE = "http://localhost:5001/api"
+API_BASE = "http://127.0.0.1:5001/api"
 
 admin_productos_bp = Blueprint('admin_productos', __name__)
 
@@ -27,7 +27,7 @@ def gestionar_stock(producto, id):
     return False
 
 # Rutas
-@admin_productos_bp.route('/admin/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
+@admin_productos_bp.route('/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
 def modificar(id_producto):
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
@@ -48,7 +48,7 @@ def modificar(id_producto):
         return redirect(url_for("modificar", id_producto=juego['id'])) 
     return render_template('admin/modificar.html', producto=juego, modificar= True )
 
-@admin_productos_bp.route('/admin/cargar', methods=['GET', 'POST']) 
+@admin_productos_bp.route('/cargar', methods=['GET', 'POST']) 
 def cargar():
     if session.get('administrador') != 1:
         return redirect(url_for('home'))

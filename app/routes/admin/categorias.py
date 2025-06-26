@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, session, request, B
 from utils.forms import CategoriasForm
 import requests
 
-API_BASE = "http://localhost:5001/api"
+API_BASE = "http://127.0.0.1:5001/api"
 
 admin_categorias_bp = Blueprint('admin_categorias', __name__)
 
@@ -12,7 +12,6 @@ def listar_categorias():
     response = requests.get(f"{API_BASE}/admin/usuario/admin/listar_categorias")
     if response.status_code == 200:
         data = response.json()
-        print(data['categorias'])
         return data['categorias']
     return {}
 
@@ -25,13 +24,13 @@ def get_categoria(id):
 
 
 # Rutas
-@admin_categorias_bp.route('/admin/categorias', methods=['GET'])
+@admin_categorias_bp.route('/categorias', methods=['GET'])
 def categorias():
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
     return render_template('admin/categorias.html', categorias=listar_categorias())
 
-@admin_categorias_bp.route('/admin/categorias/eliminar/<id>', methods=['GET', 'POST'])
+@admin_categorias_bp.route('/categorias/eliminar/<int:id>', methods=['GET', 'POST'])
 def eliminar_categorias(id):
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
@@ -48,7 +47,7 @@ def eliminar_categorias(id):
                            nombre_categoria=nombre_categoria,
                            categoria_id=categoria_id)
 
-@admin_categorias_bp.route('/admin/categorias/editar/<id>', methods=['GET', 'POST'])
+@admin_categorias_bp.route('/categorias/editar/<int:id>', methods=['GET', 'POST'])
 def editar_categorias(id):
     if session.get('administrador') != 1:
         return redirect(url_for('home'))
@@ -70,7 +69,7 @@ def editar_categorias(id):
                            categoria_id=categoria_id,
                            form = form)
 
-@admin_categorias_bp.route('/admin/categorias/agregar', methods=['GET', 'POST'])
+@admin_categorias_bp.route('/categorias/agregar', methods=['GET', 'POST'])
 def crear_categorias():
     if session.get('administrador') != 1:
         return redirect(url_for('home'))

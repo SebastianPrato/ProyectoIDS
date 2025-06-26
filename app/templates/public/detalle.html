@@ -1,22 +1,29 @@
 {% extends "public/base.html" %}
 {% block detalle %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/detalle.css') }}">
 <!-- Shop Detail Start -->
 <div class="container-fluid pb-5">
     <div class="row px-xl-5">
         <div class="col-lg-5">
-            <img class="w-100" id="imagen-juego" src="{{ url_for('static', filename= 'img/' + producto['imagen'])}}" alt="Image">
+            <img class="w-100" src="{{ url_for('static', filename= 'img/' + producto['imagen'])}}" alt="Image">
         </div>
 
-        <div class="col-lg-7 h-auto">
+        <form class="col-lg-7 h-auto" method="POST">
             <div class="h-100 bg-light p-30">
                 <h3 id="nombre-juego">{{ producto['nombre'] }}</h3>
                 <h3 id="precio-juego">${{ producto['precio'] }}</h3>
                 <p id="descripcion-juego">{{producto['descripcion']}}</p>
+                <p>Stock: {{producto['stock']}}</p>
+                {% if session.get('id_cliente') %}
                 <div class="d-flex align-items-center mb-4 pt-2">
-                    <button id="boton-agregar-carrito"><i class="fa fa-shopping-cart"></i> Añadir al carrito</button>
+                    <input type="hidden" id="id_producto" name="id_producto" value="{{producto['id_producto']}}">
+                    <input type="hidden" id="cantidad" name="cantidad" value="1">
+                    <button type="submit" id="boton-agregar-carrito"><i class="fa fa-shopping-cart"></i> Añadir al carrito</button>
                 </div>
+                {% endif %}
             </div>
-        </div>
+        </form>
     </div>
 </div>
 <!-- Shop Detail End -->

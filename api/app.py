@@ -1,18 +1,18 @@
 from flask import Flask
 from flask_cors import CORS
 
-from public.routes import public_bp
-from public.productos import productos_bp
-from public.categorias import categorias_bp
-from public.usuarios import usuarios_bp
-from public.compras import compras_bp
+from routes.public.routes import public_bp
+from routes.public.productos import productos_bp
+from routes.public.categorias import categorias_bp
+from routes.public.usuarios import usuarios_bp
+from routes.public.compras import compras_bp
 
-from admin.admin import admin_bp
+from routes.admin.admin import admin_bp
 
 app = Flask(__name__)
 app.secret_key = 'clave-super-secreta'
 
-CORS(app, supports_credentials=True, origins=["http://localhost:5000"])
+CORS(app, supports_credentials=True, origins=["http://127.0.0.1:5000"])
 
 app.register_blueprint(public_bp, url_prefix='/api')
 app.register_blueprint(productos_bp, url_prefix='/api/productos')   
