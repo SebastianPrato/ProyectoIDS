@@ -1,7 +1,6 @@
-function eliminarProducto() {
-    const id=parseInt(document.getElementById("producto-id").value)
+function eliminarProducto(id) {
     if (confirm('¿Estás seguro de que queres eliminar el producto?')) {
-        fetch(`http://127.0.0.1:5000/usuario/admin/borrar/${id}`, {
+        fetch(`http://127.0.0.1:5001/api/admin/borrar/${id}`, {
             method: 'DELETE'})
         .then(response => {
             if (response.ok) {
@@ -13,3 +12,7 @@ function eliminarProducto() {
         });
     }
 }   
+
+function modificarProducto() {
+    alert("Stock de productos actualizado");
+  }

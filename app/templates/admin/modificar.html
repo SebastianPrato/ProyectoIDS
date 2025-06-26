@@ -10,7 +10,6 @@
                     {% if modificar %}
                     <input type="hidden" id="producto-id" value="{{ producto['id'] }}">
                     {% endif %}
-
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del producto</label>
                         <input type="text" class="form-control" name="nombre" value="{{ producto['nombre'] }}" required>
@@ -42,11 +41,11 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" onclick="modificarProducto()">
                             Guardar
                         </button>
                         {% if modificar %}
-                            <button type="button" class="btn btn-danger" onclick="eliminarProducto()">
+                            <button type="button" class="btn btn-danger" onclick="eliminarProducto({{producto['id_producto']}})">
                                 Borrar Producto
                             </button>
                         {% endif %}
