@@ -1,5 +1,5 @@
 import mysql.connector
-from flask import Blueprint, abort, request, jsonify, session
+from flask import Blueprint, request, jsonify, session
 
 from db import get_connection
 
