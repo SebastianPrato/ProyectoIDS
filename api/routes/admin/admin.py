@@ -141,10 +141,10 @@ def modificar_producto(id):
     cursor = coneccion.cursor(dictionary=True)
     data = request.get_json()
     print(data)
-    cursor.execute("SELECT * FROM productos WHERE id=%s;", (id,))
+    cursor.execute("SELECT * FROM productos WHERE id_producto=%s;", (id,))
     producto = cursor.fetchone()
     if producto:
-        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id = %s;", 
+        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id_producto = %s;", 
                        (int(data["categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
     coneccion.commit()
     cursor.close()
@@ -168,7 +168,7 @@ def cargar():
 def borrar(id):
     coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
-    cursor.execute("DELETE FROM productos WHERE id = %s;", (id,))
+    cursor.execute("DELETE FROM productos WHERE id_producto = %s;", (id,))
     if cursor.rowcount == 0:
                 return jsonify({"message": "Producto no encontrado"}), 404
     coneccion.commit()

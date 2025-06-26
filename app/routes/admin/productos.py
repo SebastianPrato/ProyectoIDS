@@ -15,13 +15,13 @@ def obtener_producto(id):
     return {}
 
 def cargar_producto(producto):
-    response=requests.post(f"{API_BASE}/usuario/admin/cargar", json=producto)
+    response=requests.post(f"{API_BASE}/admin/cargar", json=producto)
     if response.status_code==201:
         return True
     return False
 
 def gestionar_stock(producto, id):
-    response=requests.post(f"{API_BASE}/usuario/admin/modificar/{id}", json=producto)
+    response=requests.post(f"{API_BASE}/admin/modificar/{id}", json=producto)
     if response.status_code==201:
         return True
     return False
@@ -44,8 +44,8 @@ def modificar(id_producto):
         if not ok:
             flash("Error al guardar producto", "error")
         else:
-            flash("Producto agregado con éxito", "success")
-        return redirect(url_for("modificar", id_producto=juego['id'])) 
+            flash("Producto modificado con éxito", "success")
+        return render_template("admin/modificar.html", producto=juego['id_producto'], modificar=True) 
     return render_template('admin/modificar.html', producto=juego, modificar= True )
 
 @admin_productos_bp.route('/cargar', methods=['GET', 'POST']) 
@@ -65,5 +65,5 @@ def cargar():
             flash("Error al guardar producto", "error")
         else:
             flash("Producto agregado con éxito", "success")
-        return redirect(url_for("cargar", modificar=False))
+        return render_template('admin/modificar.html', producto={}, modificar= False )
     return render_template('admin/modificar.html', producto={}, modificar= False )
