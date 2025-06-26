@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify, abort, session, redirect
-import mysql
 from db import get_connection
 
 FRONT_BASE = "http://127.0.0.1:5000"
@@ -8,9 +7,9 @@ compras_bp=Blueprint('compras', __name__)
 
 @compras_bp.route('/', methods=['GET'])
 def mostrar_mis_compras():
-    if 'user_id' not in session:
-         return jsonify({'error': 'No has iniciado sesión'}), 401
-    user_id = session['user_id']
+    if 'id_cliente' not in session:
+        return jsonify({'error': 'No has iniciado sesión'}), 401
+    user_id = session['id_cliente']
 
     conexion = get_connection()
     cursor = conexion.cursor(dictionary=True)
@@ -19,18 +18,17 @@ def mostrar_mis_compras():
         SELECT
             compras.id_compra,
             compras.fecha,
-            compras.entregado,
+            compras.estado,
             productos.id_producto,
             productos.nombre AS nombre_producto,
             productos.precio,
-            detalle_compras.cantidad
+            detalle_compras.cantidad,
+            productos.imagen
         FROM compras
-        JOIN detalle_compras ON compras.id_compra = detalle_compras.compra_id
-        JOIN productos ON productos.id_producto = detalle_compras.producto_id
-        WHERE compras.cliente_id = %s;
-    """ , (user_id,)
+        JOIN detalle_compras ON compras.id_compra = detalle_compras.id_compra
+        JOIN productos ON productos.id_producto = detalle_compras.id_producto
+        WHERE compras.id_cliente = %s;""" , (user_id,)
     )
-
     compras = cursor.fetchall()
     cursor.close()
     conexion.close()

@@ -28,11 +28,11 @@
             <span class="h2 text-uppercase text-primary bg-light px-2">LUDO</span>
             <span class="h2 text-uppercase text-light bg-primary px-2 ml-n1">TECA</span>
         </div>
-        <a href="{{ url_for('admin_productos.cargar') }}" class="{% if request.endpoint == 'cargar' %}active{% endif %}"><i
+        <a href="{{ url_for('admin_productos.cargar') }}"><i
                 class="fas fa-plus-circle mr-2"></i>Cargar producto</a>
-        <a href="{{ url_for('admin_categorias.categorias') }}" class="{% if request.endpoint == 'categorias' %}active{% endif %}"><i
+        <a href="{{ url_for('admin_categorias.categorias') }}"><i
                 class="fas fa-tags mr-2"></i>Categorías</a>
-        <a href="" class="{% if request.endpoint == 'ver_pedidos' %}active{% endif %}"><i
+        <a href="{{ url_for('admin_pedidos.pedidos') }}"><i
                 class="fas fa-box-open mr-2"></i>Ver pedidos</a>
     </div>
 
@@ -50,11 +50,17 @@
         <div class="content-wrapper">
             {% block categorias %}
             {% endblock %}
+
             {% block confirmacion %}
             {% endblock %}
+
             {% block gestion %}
             {% endblock %}
+
             {% block modificar %}
+            {% endblock %}
+
+            {% block pedidos %}
             {% endblock %}
         </div>
     </div>

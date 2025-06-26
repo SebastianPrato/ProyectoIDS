@@ -11,7 +11,7 @@
 
         <div id="compra-content">
             <div id="compra-id-wrapper">
-                <h4 id="compra-id-texto">#{{compra["id"]}}</h4>
+                <h4 id="compra-id-texto">#{{compra[0]["id_compra"]}}</h4>
             </div>
 
             {% for producto in compra %}
@@ -20,37 +20,46 @@
                 <div id="compra-datos">
                     <div class="compra-datos-section" id="compra-fotoproducto-wrapper">
                         <div id="compra-fotoproducto-container">
-                            <img id="fotoproducto" src="../static/img/teto.jpg" alt="Teto">
+                            <img id="fotoproducto" src="{{ url_for('static', filename= 'img/' + producto['imagen'])}}"
+                                alt="Teto">
                         </div>
                     </div>
                     <div class="compra-datos-section" id="compra-detallesproducto">
                         <div class="detalleproducto" id="nombreproductoproducto">
-                            <h5>Producto: {{compra["producto"]}}</h5>
+                            <h5>Producto: {{producto["nombre_producto"]}}</h5>
                         </div>
                         <div class="detalleproducto" id="precioproducto">
-                            <h5>Precio por unidad: ${{compra["precio"]}}</h5>
+                            <h5>Precio por unidad: ${{producto["precio"]}}</h5>
                         </div>
                         <div class="detalleproducto" id="cantidadunidades">
-                            <h5>Cantidad de unidades: {{compra["cantidad"]}}</h5>
+                            <h5>Cantidad de unidades: {{producto["cantidad"]}}</h5>
                         </div>
                     </div>
                     <div class="compra-datos-section" id="compra-detallescompra">
                         <div class="detallecompra" id="totalcompra">
-                            <h5>Total de la compra: ${{compra["total"]}}</h5>
+                            <h5>Subtotal sin impuestos: ${{(producto["cantidad"]|int*producto["precio"]|int)*0.79}}</h5>
+                        </div>
+                        <div class="detallecompra" id="totalcompra">
+                            <h5>Total (por producto): ${{producto["cantidad"]|int*producto["precio"]|int}}</h5>
                         </div>
                         <div class="boton-ver-wrapper" id="boton-verproducto-wrapper">
                             <div id="boton-verproducto-container">
-                                <h4><a href="#" class="opcionesvermas">Ver producto</a></h4>
+                                <h4><a href="{{ url_for('public_productos.producto_detalle', id_producto = producto['id_producto'])}}"
+                                        class="opcionesvermas">Ver producto</a></h4>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+
+
             {% endfor %}
+
             <div class="detallecompra" id="fechaentrega">
-                <h5>{{compra["entrega"]}}</h5>
+                <h5>Total de la compra: {{totales[loop.index0]}}</h5>
             </div>
+        
         </div>
 
         {% endfor %}

@@ -60,9 +60,9 @@
 }
 
 #miscompras-barradecompra {
-    margin: 2rem auto 2rem auto;
+    margin: 1.5rem auto 2rem auto;
     background-color: rgb(235, 241, 240);
-    height: 14rem;
+    height: 12rem;
     width: 85%;
     border: solid black 1.5px;
     overflow: hidden;
@@ -79,7 +79,7 @@
     margin: 1rem;
     background-color: white;
     height: 100%;
-    width: 20%;
+    width: 25%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -105,11 +105,11 @@
 }
 
 .detalleproducto {
-    margin: 2rem 0rem 2rem 1rem;
+    margin: 1rem 0rem 2rem 1rem;
 }
 
 .detallecompra {
-    margin: 2rem 1rem 0rem 1rem;
+    margin: 1rem 1rem 0rem 1rem;
 }
 
 .boton-ver-wrapper {
@@ -147,5 +147,5 @@
 }
 
 h5{
-    text-align: justify;
+    text-align: center;
 }

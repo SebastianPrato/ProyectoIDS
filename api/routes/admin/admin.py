@@ -6,33 +6,36 @@ from db import get_connection
 admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route('/pedidos', methods=['GET'])
-def ver_pedidos():
-    if 'usuario' not in session: #ESTA ES LA MANERA DE PREGUNTAR SI SE INICIÓ SESIÓN
-        print("Usuario no autenticado.")
-        return jsonify({"auth": False, "message": "Usuario no autenticado"}), 401
-    query = "SELECT * FROM compras;"
-    try:
-        coneccion = get_connection()
-        with coneccion.cursor() as cursor:
-            cursor.execute(query)
-            resultado = cursor.fetchall()
-            pedidos = []
-            for row in resultado:
-                pedido = {
-                    'id': row['id_comra'],
-                    'cliente': row['cliente_id'],
-                    'estado': row['pagado'],
-                    'fecha': row['fecha'],
-                    'estado': row['entregado']
-                }
-                pedidos.append(pedido)
+def mostrar_pedidos():
+    if 'id_cliente' not in session:
+        return jsonify({'error': 'No has iniciado sesión'}), 401
+    user_id = session['id_cliente']
 
-            return jsonify(pedidos), 200
-    except Exception as e:
-        print(f"Error en ver_pedidos: {e}")
-        return jsonify({'message': f'Error al obtener pedidos: {str(e)}'}), 500
-    finally:
-        coneccion.close()
+    conexion = get_connection()
+    cursor = conexion.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            compras.id_compra,
+            compras.fecha,
+            compras.estado,
+            productos.id_producto,
+            productos.nombre AS nombre_producto,
+            productos.precio,
+            detalle_compras.cantidad,
+            productos.imagen
+        FROM compras
+        JOIN detalle_compras ON compras.id_compra = detalle_compras.id_compra
+        JOIN productos ON productos.id_producto = detalle_compras.id_producto
+        WHERE compras.estado = 1;""")
+    )
+    compras = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    return jsonify(compras), 200
+
+
+
 @admin_bp.route('/pedidos/<int:id>', methods=['GET'])
 def ver_pedido(id):
     if 'usuario' not in session: #Se comprueba que esté la sesion iniciada
