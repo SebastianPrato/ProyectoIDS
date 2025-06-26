@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, Blueprint
 from utils.forms import RegisterForm
 import requests
 
-API_BASE = "http://localhost:5001/api"
+API_BASE = "http://127.0.0.1:5001/api"
 
 public_usuarios_bp = Blueprint('public_usuarios', __name__)
 
@@ -19,7 +19,7 @@ def registro():
         usuario={"nombre": nombre, "apellido": apellido, "email":email, "contrasenia":contrasenia}
         response = requests.post(f"{API_BASE}/usuarios/registro", json=usuario)
         if response.status_code == 200:
-            return redirect(url_for('login'))  # O tu ruta de login
+            return redirect(url_for('login'))
         else:
             flash("Hubo un error al registrar. Intenta nuevamente.") 
     return render_template('public/registro.html', form=form)

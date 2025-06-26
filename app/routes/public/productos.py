@@ -1,7 +1,9 @@
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, request, session, redirect, url_for
 import requests
 
-API_BASE = "http://localhost:5001/api"
+from routes.public.compras import modificar_carrito
+
+API_BASE = "http://127.0.0.1:5001/api"
 
 public_productos_bp = Blueprint('public_productos', __name__)
 
@@ -22,7 +24,6 @@ def listar_categorias():
     response = requests.get(f"{API_BASE}/categorias")
     if response.status_code == 200:
         data = response.json()
-        print(data['categorias'])
         return data['categorias']
     return {}
 
@@ -39,10 +40,20 @@ def productos():
     categorias = listar_categorias()
     return render_template('public/productos.html', productos = obtener_productos(), categorias=categorias)
 
-@public_productos_bp.route('/<int:id_producto>', methods=['GET'])
+@public_productos_bp.route('/<int:id_producto>', methods=['GET', 'POST'])
 def producto_detalle(id_producto):
-   producto=obtener_producto(id_producto)
-   return render_template('public/detalle.html', producto = producto)
+    producto=obtener_producto(id_producto)
+    categorias = listar_categorias()
+
+    message = None
+
+    if request.method == "POST":
+        if not session.get('id_cliente'):
+            message = "Debe iniciar sesión para agregar productos al carrito"
+        else:
+            message = modificar_carrito(request.form).get('message')
+    
+    return render_template('public/detalle.html', producto = producto, categorias=categorias, message=message)
 
 @public_productos_bp.route('/categoria/<int:id_categoria>', methods=['GET'])
 def productos_categoria(id_categoria):

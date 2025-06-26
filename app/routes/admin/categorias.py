@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, session, request, B
 from utils.forms import CategoriasForm
 import requests
 
-API_BASE = "http://localhost:5001/api"
+API_BASE = "http://127.0.0.1:5001/api"
 
 admin_categorias_bp = Blueprint('admin_categorias', __name__)
 
@@ -12,7 +12,6 @@ def listar_categorias():
     response = requests.get(f"{API_BASE}/admin/usuario/admin/listar_categorias")
     if response.status_code == 200:
         data = response.json()
-        print(data['categorias'])
         return data['categorias']
     return {}
 

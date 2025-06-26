@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, session, request, B
 from utils.forms import CategoriasForm
 import requests
 
-API_BASE = "http://localhost:5001/api"
+API_BASE = "http://127.0.0.1:5001/api"
 
 admin_productos_bp = Blueprint('admin_productos', __name__)
 

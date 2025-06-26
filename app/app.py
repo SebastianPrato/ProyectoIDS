@@ -12,7 +12,7 @@ from routes.admin.admin import admin_bp
 from routes.admin.productos import admin_productos_bp
 from routes.admin.categorias import admin_categorias_bp
 
-API_BASE = "http://localhost:5001/api"
+API_BASE = "http://127.0.0.1:5001/api"
 
 app = Flask(__name__)
 app.secret_key = 'clave-super-secreta'  # Misma clave que en el backend
