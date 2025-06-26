@@ -1,0 +1,435 @@
+
+openapi: 3.0.0
+info:
+  title: API Ludoteca
+  version: 1.0.1
+  description: API completa para productos, usuarios, carrito, compras y administración.
+
+servers:
+  - url: http://localhost:5001/api
+
+paths:
+  /:
+    get:
+      summary: Obtener productos recientes y destacados
+      tags: [Inicio]
+      responses:
+        '200':
+          description: Productos obtenidos
+          content:
+            application/json:
+              example:
+                recientes:
+                  - id_producto: 1
+                    nombre: Producto Reciente
+                destacados:
+                  - id_producto: 2
+                    nombre: Producto Destacado
+
+  /productos:
+    get:
+      summary: Listar todos los productos
+      tags: [Productos]
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              example:
+                - id_producto: 1
+                  nombre: Producto 1
+                  precio: 100.0
+
+  /productos/{producto_id}:
+    get:
+      summary: Obtener detalles de un producto
+      tags: [Productos]
+      parameters:
+        - in: path
+          name: producto_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Producto encontrado
+          content:
+            application/json:
+              example:
+                id_producto: 1
+                nombre: Producto Detalle
+        '404':
+          description: Producto no encontrado
+
+  /productos/categoria/{categoria_id}:
+    get:
+      summary: Obtener productos por categoría
+      tags: [Productos]
+      parameters:
+        - in: path
+          name: categoria_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Productos por categoría
+          content:
+            application/json:
+              example:
+                - id_producto: 1
+                  nombre: Producto de Categoría
+        '404':
+          description: Categoría no encontrada
+
+  /categorias:
+    get:
+      summary: Listar todas las categorías
+      tags: [Categorías]
+      responses:
+        '200':
+          description: Lista de categorías
+          content:
+            application/json:
+              example:
+                categorias:
+                  - id: 1
+                    nombre: Electrónica
+
+  /usuarios/registro:
+    post:
+      summary: Registrar nuevo usuario
+      tags: [Usuarios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                apellido:
+                  type: string
+                email:
+                  type: string
+                contrasenia:
+                  type: string
+            example:
+              nombre: Juan
+              apellido: Pérez
+              email: juan@mail.com
+              contrasenia: secret123
+      responses:
+        '302':
+          description: Redirección al login
+        '400':
+          description: Correo ya registrado
+
+  /usuarios/login:
+    post:
+      summary: Iniciar sesión
+      tags: [Usuarios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              email: juan@mail.com
+              contrasenia: secret123
+      responses:
+        '200':
+          description: Autenticación exitosa
+          content:
+            application/json:
+              example:
+                auth: true
+                id: 1
+                nombre: Juan
+                administrador: false
+        '401':
+          description: Credenciales incorrectas
+
+  /compras:
+    get:
+      summary: Ver compras del usuario
+      tags: [Compras]
+      responses:
+        '200':
+          description: Lista de compras
+          content:
+            application/json:
+              example:
+                - id_compra: 1
+                  fecha: "2025-06-24"
+                  entregado: false
+                  productos:
+                    - id_producto: 10
+                      nombre_producto: Teclado
+                      precio: 50.0
+                      cantidad: 2
+
+
+  /compras/carrito:
+    get:
+      summary: Obtener carrito actual del cliente autenticado
+      tags: [Compras]
+      responses:
+        '200':
+          description: Carrito actual
+          content:
+            application/json:
+              example:
+                - id_detalle_compra: 5
+                  id_producto: 2
+                  nombre: "Mouse"
+                  precio: 50.0
+                  cantidad: 2
+
+    post:
+      summary: Agregar o modificar un producto en el carrito
+      tags: [Compras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id_producto: 3
+              cantidad: 2
+      responses:
+        '201':
+          description: Producto agregado o actualizado
+          content:
+            application/json:
+              example:
+                message: "Producto agregado exitosamente"
+
+    delete:
+      summary: Eliminar un producto del carrito
+      tags: [Compras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              id_detalle_compra: 5
+      responses:
+        '200':
+          description: Producto eliminado
+          content:
+            application/json:
+              example:
+                message: "Producto eliminado exitosamente"
+
+  /compras/pagar:
+    post:
+      summary: Realizar el pago del carrito
+      tags: [Compras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              numero: "4111 1111 1111 1111"
+              nombre: "Juan Pérez"
+              vencimiento: "12/26"
+              cvv: "123"
+      responses:
+        '201':
+          description: Compra realizada con éxito
+          content:
+            application/json:
+              example:
+                message: "Compra realizada con éxito"
+        '400':
+          description: Datos de tarjeta inválidos o carrito vacío
+
+    post:
+      summary: Agregar ítem al carrito
+      tags: [Carrito]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              cliente_id: 1
+              producto_id: 2
+              cantidad: 1
+      responses:
+        '201':
+          description: Ítem agregado o actualizado
+
+  /admin/pedidos:
+    get:
+      summary: Obtener todos los pedidos
+      tags: [Admin]
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              example:
+                - id: 1
+                  cliente: 4
+                  estado: true
+                  fecha: "2025-06-24"
+        '401':
+          description: Usuario no autenticado
+
+  /admin/pedidos/{id}:
+    get:
+      summary: Obtener detalle de un pedido
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Detalle del pedido
+          content:
+            application/json:
+              example:
+                - compra: 1
+                  producto: 2
+                  cantidad: 3
+  
+  /admin/editar_categoria/{categoria_id}:
+    put:
+      summary: Editar categoría existente
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: categoria_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre]
+              properties:
+                nombre:
+                  type: string
+      responses:
+        '200':
+          description: Categoría editada
+        '404':
+          description: Categoría no encontrada
+
+  /admin/eliminar_categoria/{categoria_id}:
+    delete:
+      summary: Eliminar categoría existente
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: categoria_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Categoría eliminada
+        '404':
+          description: Categoría no encontrada
+
+  /admin/categorias:
+    get:
+      summary: Listar todas las categorías
+      tags: [Admin]
+      responses:
+        '200':
+          description: Lista de categorías
+
+  /admin/categorias/{categoria_id}:
+    get:
+      summary: Obtener una categoría por ID
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: categoria_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Categoría encontrada
+        '404':
+          description: Categoría no encontrada
+
+  /admin/crear_categoria:
+    post:
+      summary: Crear una nueva categoría
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              nombre: Juguetes
+      responses:
+        '201':
+          description: Categoría creada
+
+  /admin/modificar/{id}:
+    post:
+      summary: Modificar producto
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              categoria: 2
+              nombre: Zapatillas
+              descripcion: "Zapatillas deportivas"
+              precio: 89.99
+              imagen: "zapa.jpg"
+              stock: 30
+      responses:
+        '201':
+          description: Producto modificado
+
+  /admin/cargar:
+    post:
+      summary: Cargar nuevo producto
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              categoria: 3
+              nombre: Silla gamer
+              descripcion: "Silla cómoda para jugar"
+              precio: 120.0
+              imagen: "silla.jpg"
+              stock: 10
+      responses:
+        '201':
+          description: Producto agregado
+
+  /admin/borrar/{id}:
+    delete:
+      summary: Eliminar producto
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Producto eliminado
+        '404':
+          description: Producto no encontrado
