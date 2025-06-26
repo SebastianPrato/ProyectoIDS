@@ -12,7 +12,3 @@ function eliminarProducto(id) {
         });
     }
 }   
-
-function modificarProducto() {
-    alert("Stock de productos actualizado");
-  }

@@ -147,8 +147,8 @@ def modificar_producto(id):
     cursor.execute("SELECT * FROM productos WHERE id_producto=%s;", (id,))
     producto = cursor.fetchone()
     if producto:
-        cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id_producto = %s;", 
-                       (int(data["categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
+        cursor.execute("UPDATE productos SET id_categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id_producto = %s;", 
+                       (int(data["id_categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
         coneccion.commit()
     cursor.close()
     coneccion.close()
@@ -161,8 +161,8 @@ def cargar():
     coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
     data = request.get_json()
-    cursor.execute("INSERT INTO productos (categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);", 
-                       (int(data["categoria"]), data["nombre"], data["descripcion"], float(data["precio"]), data["imagen"],int(data["stock"]),))
+    cursor.execute("INSERT INTO productos (id_categoria, nombre, descripcion, precio, imagen, stock) VALUES (%s, %s, %s, %s, %s, %s);", 
+                       (int(data["id_categoria"]), data["nombre"], data["descripcion"], float(data["precio"]), data["imagen"],int(data["stock"]),))
     coneccion.commit()
     cursor.close()
     coneccion.close()

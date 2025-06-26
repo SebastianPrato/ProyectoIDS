@@ -27,7 +27,7 @@ def mostrar_mis_compras():
         FROM compras
         JOIN detalle_compras ON compras.id_compra = detalle_compras.id_compra
         JOIN productos ON productos.id_producto = detalle_compras.id_producto
-        WHERE compras.id_cliente = %s;""" , (user_id,)
+        WHERE compras.id_cliente = %s AND compras.estado = 1;""" , (user_id,)
     )
     compras = cursor.fetchall()
     cursor.close()
