@@ -19,9 +19,9 @@ def ver_pedidos():
             pedidos = []
             for row in resultado:
                 pedido = {
-                    'id': row['id'],
+                    'id': row['id_comra'],
                     'cliente': row['cliente_id'],
-                    'estado': row['estado'],
+                    'estado': row['pagado'],
                     'fecha': row['fecha'],
                     'estado': row['entregado']
                 }
@@ -49,7 +49,7 @@ def ver_pedido(id):
                 pedido = {
                     'compra': resultado['compra_id'],
                     'producto': resultado['producto_id'],
-                    'cantidad': resultado['estado'],
+                    'cantidad': resultado['cantidad'],
                 }
                 productos.append(pedido)
             return jsonify(productos), 200
@@ -65,7 +65,7 @@ def crear_categoria():
     cursor = coneccion.cursor()
     data = request.get_json()
     nombre = data.get("nombre")
-    cursor.execute("INSERT INTO categorias (nombre) VALUES (%s);",
+    cursor.execute("INSERT INTO categoria (nombre) VALUES (%s);",
                   (nombre,))
     coneccion.commit()
     cursor.close()
@@ -114,7 +114,7 @@ def eliminar_categoria(categoria_id):
 def listar_categorias():
     coneccion = get_connection()
     cursor = coneccion.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM categorias")
+    cursor.execute("SELECT * FROM categoria")
     categorias = cursor.fetchall()
     cursor.close()
     coneccion.close()
@@ -146,9 +146,11 @@ def modificar_producto(id):
     if producto:
         cursor.execute("UPDATE productos SET categoria = %s, nombre= %s, precio= %s, stock=%s, descripcion= %s, imagen=%s WHERE id_producto = %s;", 
                        (int(data["categoria"]), data["nombre"], float(data["precio"]), int(data["stock"]), data["descripcion"], data["imagen"], id,))
-    coneccion.commit()
+        coneccion.commit()
     cursor.close()
     coneccion.close()
+    if not producto: 
+        return jsonify({"message":"Producto no encontrado"}), 404
     return jsonify({"message": "Producto modificado exitosamente"}), 201
 
 @admin_bp.route('/cargar', methods=['GET', 'POST'])
@@ -170,7 +172,9 @@ def borrar(id):
     cursor = coneccion.cursor(dictionary=True)
     cursor.execute("DELETE FROM productos WHERE id_producto = %s;", (id,))
     if cursor.rowcount == 0:
-                return jsonify({"message": "Producto no encontrado"}), 404
+        cursor.close()
+        coneccion.close()
+        return jsonify({"message": "Producto no encontrado"}), 404
     coneccion.commit()
     cursor.close()
     coneccion.close()

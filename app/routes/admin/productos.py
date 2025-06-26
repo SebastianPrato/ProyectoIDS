@@ -45,7 +45,7 @@ def modificar(id_producto):
             flash("Error al guardar producto", "error")
         else:
             flash("Producto modificado con éxito", "success")
-        return render_template("admin/modificar.html", producto=juego['id_producto'], modificar=True) 
+        return redirect(url_for('admin.home_admin'))
     return render_template('admin/modificar.html', producto=juego, modificar= True )
 
 @admin_productos_bp.route('/cargar', methods=['GET', 'POST']) 

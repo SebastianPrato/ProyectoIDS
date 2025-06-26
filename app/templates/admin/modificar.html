@@ -10,7 +10,6 @@
                     {% if modificar %}
                     <input type="hidden" id="producto-id" value="{{ producto['id'] }}">
                     {% endif %}
-                    <h5>{{producto['id_producto']}}</h5>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del producto</label>
                         <input type="text" class="form-control" name="nombre" value="{{ producto['nombre'] }}" required>
@@ -42,7 +41,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" onclick="modificarProducto()">
                             Guardar
                         </button>
                         {% if modificar %}
