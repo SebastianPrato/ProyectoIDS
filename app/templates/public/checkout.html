@@ -119,11 +119,12 @@
                         <div class="col-md-6 mb-3">
                             <label for="vencimiento" class="form-label">Fecha de Vencimiento</label>
                             <input type="text" class="form-control" id="vencimiento" name="vencimiento"
-                                placeholder="MM/AA" required>
+                                placeholder="MM/AA" required maxlength="5"
+                                oninput="if(this.value.length === 2 && !this.value.includes('/')) this.value = this.value + '/';">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="cvv" class="form-label">CVV</label>
-                            <input type="text" class="form-control" id="cvv" name="cvv" placeholder="XXX" required>
+                            <input type="text" class="form-control" id="cvv" name="cvv" placeholder="XXX" required maxlength="3">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-block btn-primary font-weight-bold py-3">Confirmar
