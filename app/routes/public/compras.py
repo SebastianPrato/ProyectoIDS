@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, session, redirect, url_for
+from flask import jsonify, render_template, Blueprint, request, session, redirect, url_for
 import requests
 
 API_BASE = "http://127.0.0.1:5001/api"
@@ -19,7 +19,7 @@ def pagar_carrito(form):
     return {}
 
 def obtener_compras_hechas():
-    response=requests.get(f"{API_BASE}/miscompras")
+    response=requests.get(f"{API_BASE}/compras", cookies=request.cookies)
     if response.status_code==200:
         return response.json()
 
@@ -74,5 +74,27 @@ def checkout():
 def compras():
     if not session.get('id_cliente'):
         return redirect(url_for('public.home'))
-    datoscompra = obtener_compras_hechas()
-    return render_template('public/miscompras.html', compra=datoscompra)
+    datos_compras = obtener_compras_hechas()
+
+    lista_compras = []
+    lista_totales = []
+    
+    i = 0
+    while i < len(datos_compras):
+        subtotal = 0
+        compra = []
+        id_actual = datos_compras[i]["id_compra"]
+        
+        while i < len(datos_compras) and datos_compras[i]["id_compra"] == id_actual:
+            compra.append(datos_compras[i])
+            subtotal += float(datos_compras[i]["precio"])*int(datos_compras[i]["cantidad"])
+
+            i += 1
+
+        lista_totales.append(subtotal)
+        lista_compras.append(compra)
+
+    #lista_compras = [compra1, compra2, compra3...]
+    #compra1 = [{'cantidad': 1, 'estado': 1, 'fecha': 'Thu, 26 Jun 2025 01:18:45 GMT',...{}}
+    
+    return render_template('public/miscompras.html', compras=lista_compras, totales=lista_totales)

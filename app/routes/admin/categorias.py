@@ -9,8 +9,6 @@ admin_categorias_bp = Blueprint('admin_categorias', __name__)
 
 
 # Funciones
-
-
 def get_categoria(id):
     response = requests.get(f"{API_BASE}/admin/categorias/{id}")
     if response.status_code == 200:
@@ -86,7 +84,7 @@ def crear_categorias():
     if form.validate_on_submit(): 
         nombre = form.name.data
         json = {'nombre': nombre}
-        response = requests.post(f"{API_BASE}/admin/crear_categoria", json=json, cookies=request.cookies)
+        response = requests.post(f"{API_BASE}/admin/crear_categoria", json=json)
         if response.status_code == 201:
             return redirect(url_for('admin_categorias.categorias'))
     return render_template('admin/confirmacion.html',
