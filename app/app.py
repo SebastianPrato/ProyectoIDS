@@ -11,6 +11,7 @@ from routes.public.compras import public_compras_bp
 from routes.admin.admin import admin_bp
 from routes.admin.productos import admin_productos_bp
 from routes.admin.categorias import admin_categorias_bp
+from routes.admin.pedidos import admin_pedidos_bp
 
 API_BASE = "http://127.0.0.1:5001/api"
 
@@ -29,6 +30,7 @@ app.register_blueprint(public_compras_bp, url_prefix='')
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(admin_productos_bp, url_prefix='/admin')
 app.register_blueprint(admin_categorias_bp, url_prefix='/admin')
+app.register_blueprint(admin_pedidos_bp, url_prefix='/pedidos')
 
 
 # Rutas comunes

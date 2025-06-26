@@ -1,6 +1,62 @@
 {% extends "admin/base.html" %}
 
+{% block pedidos %}
+<div>
+    <div>
+        <h2>Pedidos</h2>
+    </div>
 
+    <div>
+        {% for pedido in pedidos %}
+        {% set idx = loop.index0 %}
+        
+        <div class="pedido-wrapper">
+            <h4 onclick="togglePedido({{ idx }})" style="cursor: pointer;">
+                <strong>Id de pedido:</strong> #{{ pedido[0]["id_compra"] }}
+            </h4>
+            <h5><strong>Id cliente:</strong> {{ pedido[0]["id_cliente"] }}</h5>
+            <h5><strong>Fecha del pedido:</strong> {{ pedido[0]["fecha"] }}</h5>
 
+            <div id="pedido-{{ idx }}" style="display: none;">
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio por unidad</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal sin impuestos</th>
+                            <th>Total por producto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in pedido %}
+                        <tr>
+                            <td>{{ producto["nombre_producto"] }}</td>
+                            <td>${{ producto["precio"] }}</td>
+                            <td>{{ producto["cantidad"] }}</td>
+                            <td>${{ (producto["cantidad"] | int * producto["precio"] | int * 0.79) | round(2) }}</td>
+                            <td>${{ producto["cantidad"] | int * producto["precio"] | int }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4"><strong>Total de la compra:</strong></td>
+                            <td><strong>${{ totales[idx] }}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br><br>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function togglePedido(idx) {
+        const div = document.getElementById(`pedido-${idx}`);
+        div.style.display = (div.style.display === 'none') ? 'block' : 'none';
+    }
+</script>
 
 {% endblock %}

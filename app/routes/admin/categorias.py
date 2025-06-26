@@ -9,14 +9,14 @@ admin_categorias_bp = Blueprint('admin_categorias', __name__)
 
 # Funciones
 def listar_categorias():
-    response = requests.get(f"{API_BASE}/admin/usuario/admin/listar_categorias")
+    response = requests.get(f"{API_BASE}/admin/listar_categorias")
     if response.status_code == 200:
         data = response.json()
         return data['categorias']
     return {}
 
 def get_categoria(id):
-    response = requests.get(f"{API_BASE}/admin/usuario/admin/categoria/{id}")
+    response = requests.get(f"{API_BASE}/admin/categoria/{id}")
     if response.status_code == 200:
         data = response.json()
         return data
@@ -39,7 +39,7 @@ def eliminar_categorias(id):
     categoria_id = categoria[0]
 
     if request.method == 'POST':
-        response = requests.delete(f"{API_BASE}/admin/usuario/admin/eliminar_categoria/{id}")
+        response = requests.delete(f"{API_BASE}/admin/admin/eliminar_categoria/{id}")
         if response.status_code == 200:
             return redirect(url_for('categorias'))
 
@@ -59,7 +59,7 @@ def editar_categorias(id):
     if form.validate_on_submit(): 
         nombre = form.name.data
         json = {'nombre': nombre}
-        response = requests.put(f"{API_BASE}/admin/usuario/admin/editar_categoria/{id}", json=json)
+        response = requests.put(f"{API_BASE}/admin/editar_categoria/{id}", json=json)
         if response.status_code == 200:
             return redirect(url_for('categorias'))
     if request.method == 'GET':
@@ -77,7 +77,7 @@ def crear_categorias():
     if form.validate_on_submit(): 
         nombre = form.name.data
         json = {'nombre': nombre}
-        response = requests.post(f"{API_BASE}/admin/usuario/admin/crear_categoria", json=json)
+        response = requests.post(f"{API_BASE}/admin/crear_categoria", json=json)
         if response.status_code == 201:
             return redirect(url_for('categorias'))
     return render_template('admin/confirmacion.html',

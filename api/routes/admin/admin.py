@@ -9,13 +9,13 @@ admin_bp = Blueprint('admin', __name__)
 def mostrar_pedidos():
     if 'id_cliente' not in session:
         return jsonify({'error': 'No has iniciado sesión'}), 401
-    user_id = session['id_cliente']
 
     conexion = get_connection()
     cursor = conexion.cursor(dictionary=True)
 
     cursor.execute("""
         SELECT
+            compras.id_cliente,
             compras.id_compra,
             compras.fecha,
             compras.estado,
@@ -28,7 +28,6 @@ def mostrar_pedidos():
         JOIN detalle_compras ON compras.id_compra = detalle_compras.id_compra
         JOIN productos ON productos.id_producto = detalle_compras.id_producto
         WHERE compras.estado = 1;""")
-    )
     compras = cursor.fetchall()
     cursor.close()
     conexion.close()

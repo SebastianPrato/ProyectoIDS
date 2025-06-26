@@ -26,21 +26,21 @@
                     </div>
                     <div class="compra-datos-section" id="compra-detallesproducto">
                         <div class="detalleproducto" id="nombreproductoproducto">
-                            <h5>Producto: {{producto["nombre_producto"]}}</h5>
+                            <h5 class="h5compras">Producto: {{producto["nombre_producto"]}}</h5>
                         </div>
                         <div class="detalleproducto" id="precioproducto">
-                            <h5>Precio por unidad: ${{producto["precio"]}}</h5>
+                            <h5 class="h5compras">Precio por unidad: ${{producto["precio"]}}</h5>
                         </div>
                         <div class="detalleproducto" id="cantidadunidades">
-                            <h5>Cantidad de unidades: {{producto["cantidad"]}}</h5>
+                            <h5 class="h5compras">Cantidad de unidades: {{producto["cantidad"]}}</h5>
                         </div>
                     </div>
                     <div class="compra-datos-section" id="compra-detallescompra">
                         <div class="detallecompra" id="totalcompra">
-                            <h5>Subtotal sin impuestos: ${{(producto["cantidad"]|int*producto["precio"]|int)*0.79}}</h5>
+                            <h5 class="h5compras">Subtotal sin impuestos: ${{(producto["cantidad"]|int*producto["precio"]|int)*0.79}}</h5>
                         </div>
                         <div class="detallecompra" id="totalcompra">
-                            <h5>Total (por producto): ${{producto["cantidad"]|int*producto["precio"]|int}}</h5>
+                            <h5 class="h5compras">Total (por producto): ${{producto["cantidad"]|int*producto["precio"]|int}}</h5>
                         </div>
                         <div class="boton-ver-wrapper" id="boton-verproducto-wrapper">
                             <div id="boton-verproducto-container">
@@ -57,7 +57,7 @@
             {% endfor %}
 
             <div class="detallecompra" id="fechaentrega">
-                <h5>Total de la compra: {{totales[loop.index0]}}</h5>
+                <h5 class="h5compras">Total de la compra: {{totales[loop.index0]}}</h5>
             </div>
         
         </div>
