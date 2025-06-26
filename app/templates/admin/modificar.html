@@ -17,7 +17,11 @@
 
                     <div class="mb-3">
                         <label for="categoria" class="form-label">Categoría</label>
-                        <input type="number" class="form-control" name="categoria" min="1" max="8" value="{{ producto['categoria'] }}" required>
+                        <select class="form-control" name="id_categoria" id="id_categoria">
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria['id_categoria'] }}" {% if producto['id_categoria'] == categoria['id_categoria'] %}selected{% endif %}>{{ categoria['nombre'] }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -41,7 +45,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary" onclick="modificarProducto()">
+                        <button type="submit" class="btn btn-primary">
                             Guardar
                         </button>
                         {% if modificar %}

@@ -34,5 +34,5 @@ def api_categoria(categoria_id):
     cursor.execute("SELECT * FROM productos WHERE id_categoria = %s", (categoria_id,))
     productos=cursor.fetchall()
     if not productos:
-        abort(404, 'Categoria no encontrado')
+        jsonify({"message":"Esta categoria no tiene productos"}), 404
     return jsonify(productos), 200

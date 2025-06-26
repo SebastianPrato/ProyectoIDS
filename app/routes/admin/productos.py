@@ -2,6 +2,8 @@ from flask import render_template, redirect, url_for, flash, session, request, B
 from utils.forms import CategoriasForm
 import requests
 
+from routes.public.productos import listar_categorias
+
 API_BASE = "http://127.0.0.1:5001/api"
 
 admin_productos_bp = Blueprint('admin_productos', __name__)
@@ -29,41 +31,38 @@ def gestionar_stock(producto, id):
 # Rutas
 @admin_productos_bp.route('/modificar/<int:id_producto>', methods=['GET', 'POST']) #cumple lo basico
 def modificar(id_producto):
+    message = None
+
     if session.get('administrador') != 1:
-        return redirect(url_for('home'))
+        return redirect(url_for('public.home'))
     juego=obtener_producto(id_producto)
     if request.method== "POST":
-        nombre=request.form["nombre"]
-        categoria=request.form["categoria"]
-        descripcion=request.form["descripcion"]
-        precio=request.form["precio"]
-        imagen=request.form["imagen"]
-        stock=request.form["stock"]
-        producto_m={"nombre": nombre, "categoria": categoria, "descripcion": descripcion, "precio": precio, "imagen": imagen, "stock": stock, "crear":False}
+        producto_m=request.form
         ok=gestionar_stock(producto_m, id=id_producto)
+
         if not ok:
-            flash("Error al guardar producto", "error")
+            message = "Error al modificar producto"
         else:
-            flash("Producto modificado con éxito", "success")
-        return redirect(url_for('admin.home_admin'))
-    return render_template('admin/modificar.html', producto=juego, modificar= True )
+            message = "Producto modificado con éxito"
+            return redirect(url_for('admin.home_admin'))
+    
+    categorias = listar_categorias()
+    return render_template('admin/modificar.html', producto=juego, modificar= True, categorias=categorias, message=message)
 
 @admin_productos_bp.route('/cargar', methods=['GET', 'POST']) 
 def cargar():
+    message = None
+
     if session.get('administrador') != 1:
-        return redirect(url_for('home'))
+        return redirect(url_for('public.home'))
     if request.method== "POST":
-        nombre=request.form["nombre"]
-        categoria=request.form["categoria"]
-        descripcion=request.form["descripcion"]
-        precio=request.form["precio"]
-        imagen=request.form["imagen"]
-        stock=request.form["stock"]
-        producto={"nombre": nombre, "categoria": categoria, "descripcion": descripcion, "precio": precio, "imagen": imagen, "stock": stock, "crear":True}
+        producto=request.form
         ok=cargar_producto(producto)
         if not ok:
-            flash("Error al guardar producto", "error")
+            message = "Error al cargar producto"
         else:
-            flash("Producto agregado con éxito", "success")
-        return render_template('admin/modificar.html', producto={}, modificar= False )
-    return render_template('admin/modificar.html', producto={}, modificar= False )
+            message = "Producto cargado con éxito"
+            return redirect(url_for('admin.home_admin'))
+
+    categorias = listar_categorias() 
+    return render_template('admin/modificar.html', producto={}, modificar= False, categorias=categorias, message=message)

@@ -36,7 +36,7 @@
                                 </div>
                             </form>
                         </td>
-                        <td class="align-middle">${{producto['precio']|float * producto['cantidad']}}</td>
+                        <td class="align-middle">${{ "%.2f"|format(producto['precio']|float * producto['cantidad']) }}</td>
                         <td class="align-middle"><button onclick="eliminarProducto({{producto['id_detalle_compra']}})"
                                 class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button></td>
                         {% endfor %}
@@ -68,23 +68,6 @@
     </div>
     {% endif %}
 </div>
-
-<script>
-    function eliminarProducto(id_detalle_compra) {
-        fetch('http://127.0.0.1:5001/api/compras/carrito', {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id_detalle_compra: id_detalle_compra
-            })
-        }).then(response => {
-            alert("Producto eliminado del carrito");
-            window.location.reload();
-        });
-    }
-</script>
+    
 <!-- Cart End -->
 {% endblock %}

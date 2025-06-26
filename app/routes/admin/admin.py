@@ -17,24 +17,26 @@ def obtener_producto(id):
 # Rutas
 @admin_bp.route('/', methods=['GET', 'POST'])
 def home_admin():
+    message = None
+
     if session.get('administrador') != 1:
-        return redirect(url_for('home'))
+        return redirect(url_for('public.home'))
     if request.method == "POST":
         id = request.form["producto"]
         if not id:
-            flash("Debes ingresar un ID", "warning")
-            return redirect(url_for('home_admin'))
+            message = "Debe proporcionar un ID"
+            return render_template('admin/gestion.html', message=message)
 
         try:
             id_int = int(id)
         except ValueError:
-            flash("ID inválido", "warning")
-            return redirect(url_for('home_admin'))
+            message = "El ID debe ser un número entero"
+            return render_template('admin/gestion.html', message=message)
 
         producto = obtener_producto(id_int)
         if not producto:
-            flash("No se encontró ningún producto con ese ID", "warning")
-            return redirect(url_for('home_admin'))
+            message = "Producto no encontrado"
+            return render_template('admin/gestion.html', message=message)
 
         return redirect(url_for('admin_productos.modificar', id_producto=id_int))
 
